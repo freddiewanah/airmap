@@ -5,6 +5,7 @@
 
 class QGraphicsView;
 class QGraphicsScene;
+class QPropertyAnimation;
 class AMLineEdit;
 class AMLabelButton;
 class AMLocationManagerBase;
@@ -34,8 +35,8 @@ protected:
 
 private slots:
     void onActionCancelSearch();
-    void onActionShowSuggestion();
-    void onActionHideSuggestion();
+    void onActionSearchFocusIn();
+    void onActionSearchFocusOut();
 
 private:
     AMLocationManagerBase *m_locationManager=nullptr;
@@ -43,6 +44,8 @@ private:
     AMLineEdit *m_searchBoxText;
     AMLabelButton *m_addPoint, *m_cancelSearch, *m_stopNavigate;
     AMSearchSuggetions *m_searchSuggestion;
+
+    QPropertyAnimation *m_showSuggestion, *m_hideSuggestion;
 
     QGraphicsView *m_mapView;
     QGraphicsScene *m_mapScene;

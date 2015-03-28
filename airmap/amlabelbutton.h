@@ -23,6 +23,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+    inline void stopAnimes();
     inline void startAnime(QTimeLine *anime);
     QTimeLine *generateAnime();
     bool m_pressed=false;

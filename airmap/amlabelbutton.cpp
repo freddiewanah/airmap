@@ -8,6 +8,7 @@ AMLabelButton::AMLabelButton(QWidget *parent) :
 {
     //Set contents margins.
     setContentsMargins(5,5,5,5);
+    setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     //Generate animation timelines.
     m_expandAnime=generateAnime();
     m_foldAnime=generateAnime();
@@ -24,7 +25,7 @@ AMLabelButton::~AMLabelButton()
 void AMLabelButton::showButton()
 {
     //Check if the button has been shown.
-    int preferWidth=sizeHint().width();
+    int preferWidth=sizeHint().width()+5;
     if(width()==preferWidth)
     {
         return;
@@ -71,8 +72,16 @@ void AMLabelButton::mouseReleaseEvent(QMouseEvent *event)
     QLabel::mouseReleaseEvent(event);
 }
 
+void AMLabelButton::stopAnimes()
+{
+    m_expandAnime->stop();
+    m_foldAnime->stop();
+}
+
 inline void AMLabelButton::startAnime(QTimeLine *anime)
 {
+    //Stop all animations.
+    stopAnimes();
     //Set the start frame.
     anime->setStartFrame(width());
     //Start anime.
