@@ -6,8 +6,8 @@ AMLineEdit::AMLineEdit(QWidget *parent) : QLineEdit(parent)
 {
     m_placeHolder=new QLabel(this);
     QPalette pal=m_placeHolder->palette();
-    pal.setColor(QPalette::WindowText, QColor(0,0,0,60));
-    pal.setColor(QPalette::Text, QColor(0,0,0,60));
+    pal.setColor(QPalette::WindowText, QColor(0,0,0,120));
+    pal.setColor(QPalette::Text, QColor(0,0,0,120));
     m_placeHolder->setPalette(pal);
     m_placeHolder->setAlignment(Qt::AlignCenter);
     m_placeHolder->setAttribute(Qt::WA_TransparentForMouseEvents);

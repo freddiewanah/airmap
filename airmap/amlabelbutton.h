@@ -10,6 +10,8 @@ class AMLabelButton : public QLabel
 public:
     explicit AMLabelButton(QWidget *parent = 0);
     ~AMLabelButton();
+    QSize fixedPreferSize() const;
+    void setFixedPreferSize(const QSize &fixedPreferSize);
 
 signals:
     void clicked();
@@ -26,8 +28,9 @@ private:
     inline void stopAnimes();
     inline void startAnime(QTimeLine *anime);
     QTimeLine *generateAnime();
-    bool m_pressed=false;
+    bool m_pressed=false, m_enabledPreferSize=false;
     QTimeLine *m_expandAnime, *m_foldAnime;
+    QSize m_fixedPreferSize;
 };
 
 #endif // AMLABELBUTTON_H

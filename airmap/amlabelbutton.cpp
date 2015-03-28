@@ -9,6 +9,10 @@ AMLabelButton::AMLabelButton(QWidget *parent) :
     //Set contents margins.
     setContentsMargins(5,5,5,5);
     setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    //Set palette.
+    QPalette pal=palette();
+    pal.setColor(QPalette::WindowText, QColor(0x00, 0x7a, 0xff));
+    setPalette(pal);
     //Generate animation timelines.
     m_expandAnime=generateAnime();
     m_foldAnime=generateAnime();
@@ -25,7 +29,7 @@ AMLabelButton::~AMLabelButton()
 void AMLabelButton::showButton()
 {
     //Check if the button has been shown.
-    int preferWidth=sizeHint().width()+5;
+    int preferWidth=m_enabledPreferSize?m_fixedPreferSize.width():sizeHint().width()+5;
     if(width()==preferWidth)
     {
         return;
@@ -100,4 +104,16 @@ QTimeLine *AMLabelButton::generateAnime()
             this, &AMLabelButton::setFixedWidth);
     return timeLine;
 }
+
+QSize AMLabelButton::fixedPreferSize() const
+{
+    return m_fixedPreferSize;
+}
+
+void AMLabelButton::setFixedPreferSize(const QSize &fixedPreferSize)
+{
+    m_fixedPreferSize = fixedPreferSize;
+    m_enabledPreferSize=m_fixedPreferSize.isValid();
+}
+
 
