@@ -6,12 +6,16 @@ SOURCES += \
     main.cpp \
     ammainwindow.cpp \
     amlabelbutton.cpp \
-    amlineedit.cpp
+    amlineedit.cpp \
+    ammappainter.cpp \
+    amsearchsuggetions.cpp
 
 HEADERS += \
     ammainwindow.h \
     amlocationmanagerbase.h \
     amsearcherbase.h \
     amlabelbutton.h \
-    amlineedit.h
+    amlineedit.h \
+    ammappainter.h \
+    amsearchsuggetions.h
 
