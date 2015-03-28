@@ -1,10 +1,14 @@
 #include <QBoxLayout>
 #include <QLineEdit>
 #include <QResizeEvent>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QPropertyAnimation>
 
 #include "amlabelbutton.h"
 #include "amlineedit.h"
 #include "amlocationmanagerbase.h"
+#include "amsearchsuggetions.h"
 #include "amsearcherbase.h"
 
 #include "ammainwindow.h"
@@ -16,6 +20,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
 {
     //Initial the search bar.
     m_searchBox=new QWidget(this);
+    m_searchBox->setFixedHeight(45);
     m_searchBox->setAutoFillBackground(true);
     QPalette pal=m_searchBox->palette();
     pal.setColor(QPalette::Window, QColor(0,0,0,127));
@@ -23,10 +28,12 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     //Initial the search bar layout.
     QBoxLayout *searchBoxLayout=new QBoxLayout(QBoxLayout::LeftToRight,
                                                m_searchBox);
-    searchBoxLayout->setContentsMargins(5,5,5,5);
-    searchBoxLayout->setSpacing(5);
+    searchBoxLayout->setContentsMargins(5,0,5,0);
+    searchBoxLayout->setSpacing(0);
     m_searchBox->setLayout(searchBoxLayout);
     m_searchBoxText=new AMLineEdit(this);
+    m_searchBoxText->setPlaceHolderLabelText("搜索或输入地点");
+    m_searchBoxText->setFixedHeight(30);
     connect(m_searchBoxText, &AMLineEdit::returnPressed,
             this, &AMMainWindow::startSearch);
     m_searchBoxText->setFrame(false);
@@ -39,22 +46,44 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     searchBoxLayout->addWidget(m_searchBoxText);
     m_addPoint=new AMLabelButton(this);
     m_addPoint->setText("+");
-    m_addPoint->hide();
+    m_addPoint->hideButton();
     searchBoxLayout->addWidget(m_addPoint);
     m_cancelSearch=new AMLabelButton(this);
     m_cancelSearch->setText(tr("Cancel"));
-    m_cancelSearch->hide();
+    m_cancelSearch->hideButton();
     connect(m_searchBoxText, &AMLineEdit::focusIn,
-            m_cancelSearch, &AMLabelButton::show);
+            this, &AMMainWindow::onActionSearchFocusIn);
     connect(m_searchBoxText, &AMLineEdit::focusOut,
-            m_cancelSearch, &AMLabelButton::hide);
+            this, &AMMainWindow::onActionSearchFocusOut);
+    connect(m_cancelSearch, &AMLabelButton::clicked,
+            this, &AMMainWindow::onActionCancelSearch);
     searchBoxLayout->addWidget(m_cancelSearch);
     m_stopNavigate=new AMLabelButton(this);
     m_stopNavigate->setText(tr("End"));
-    m_stopNavigate->hide();
+    m_stopNavigate->hideButton();
     searchBoxLayout->addWidget(m_stopNavigate);
 
+    //Initial the search suggestion widget.
+    m_searchSuggestion=new AMSearchSuggetions(this);
+    m_searchSuggestion->setGeometry(0,-10,0,10);
+    m_showSuggestion=new QPropertyAnimation(m_searchSuggestion,
+                                            "geometry",
+                                            this);
+    m_showSuggestion->setEasingCurve(QEasingCurve::OutCubic);
+    m_hideSuggestion=new QPropertyAnimation(m_searchSuggestion,
+                                            "geometry",
+                                            this);
+    m_hideSuggestion->setEasingCurve(QEasingCurve::OutCubic);
+    m_hideSuggestion->setEndValue(QRect(0,-10,width(),10));
 
+    //Initial the graphics scene for the map painting.
+    m_mapScene=new QGraphicsScene(this);
+    m_mapView=new QGraphicsView(m_mapScene, this);
+    //Set the map view.
+//    ;
+
+    m_searchSuggestion->raise();
+    m_searchBox->raise();
 }
 
 AMMainWindow::~AMMainWindow()
@@ -88,6 +117,22 @@ void AMMainWindow::resizeEvent(QResizeEvent *event)
     QMainWindow::resizeEvent(event);
     //Resize the search box.
     m_searchBox->resize(width(), m_searchBoxHeight);
+    m_mapView->setGeometry(0,
+                           m_searchBox->height(),
+                           width(),
+                           height()-m_searchBox->height());
+    //Check search widget position.
+    if(m_searchSuggestion->y()>0)
+    {
+        QSize suggestionSize=QSize(width(), height()-m_searchBoxHeight);
+        m_searchSuggestion->resize(suggestionSize);
+        //Check if search suggestion animation is running.
+        if(m_showSuggestion->state()==QAbstractAnimation::Running)
+        {
+            m_showSuggestion->setEndValue(QRect(QPoint(0, m_searchBoxHeight),
+                                                suggestionSize));
+        }
+    }
 }
 
 void AMMainWindow::startSearch()
@@ -99,6 +144,41 @@ void AMMainWindow::startSearch()
     }
     //Ask searcher to search.
     qDebug()<<m_searchBoxText->text();
+}
+
+void AMMainWindow::onActionCancelSearch()
+{
+    m_searchBoxText->clear();
+    m_mapView->setFocus(Qt::MouseFocusReason);
+}
+
+void AMMainWindow::onActionSearchFocusIn()
+{
+    //Show cancel button.
+    m_cancelSearch->showButton();
+    //Show add button.
+    m_addPoint->showButton();
+    //Show search suggestion.
+    m_hideSuggestion->stop();
+    m_showSuggestion->setStartValue(m_searchSuggestion->geometry());
+    m_showSuggestion->setEndValue(QRect(0,
+                                        m_searchBoxHeight,
+                                        width(),
+                                        height()-m_searchBoxHeight));
+    m_showSuggestion->start();
+}
+
+void AMMainWindow::onActionSearchFocusOut()
+{
+    //Hide search button
+    m_cancelSearch->hideButton();
+    //Hide add button.
+    m_addPoint->hideButton();
+    //Hide search suggestion.
+    m_showSuggestion->stop();
+    m_hideSuggestion->setStartValue(m_searchSuggestion->geometry());
+    m_hideSuggestion->setEndValue(QRect(0,-10,width(),10));
+    m_hideSuggestion->start();
 }
 
 AMSearcherBase *AMMainWindow::searcher()
@@ -120,5 +200,3 @@ void AMMainWindow::setSearcher(AMSearcherBase *searcher)
         m_searcher->setLocationManager(m_locationManager);
     }
 }
-
-

@@ -3,10 +3,14 @@
 
 #include <QMainWindow>
 
+class QGraphicsView;
+class QGraphicsScene;
+class QPropertyAnimation;
 class AMLineEdit;
 class AMLabelButton;
 class AMLocationManagerBase;
 class AMSearcherBase;
+class AMSearchSuggetions;
 class AMMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -29,11 +33,22 @@ protected:
 protected:
     void startSearch();
 
+private slots:
+    void onActionCancelSearch();
+    void onActionSearchFocusIn();
+    void onActionSearchFocusOut();
+
 private:
     AMLocationManagerBase *m_locationManager=nullptr;
     AMSearcherBase *m_searcher=nullptr;
     AMLineEdit *m_searchBoxText;
     AMLabelButton *m_addPoint, *m_cancelSearch, *m_stopNavigate;
+    AMSearchSuggetions *m_searchSuggestion;
+
+    QPropertyAnimation *m_showSuggestion, *m_hideSuggestion;
+
+    QGraphicsView *m_mapView;
+    QGraphicsScene *m_mapScene;
     QWidget *m_searchBox;
 
     //Some consts.
