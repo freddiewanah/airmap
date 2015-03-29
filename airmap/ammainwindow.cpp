@@ -45,10 +45,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_searchBoxText->setPalette(pal);
     searchBoxLayout->addWidget(m_searchBoxText);
     m_addPoint=new AMLabelButton(this);
-    m_addPoint->setPixmap(QPixmap("://resource/add.png"));
-    m_addPoint->setScaledContents(true);
+    m_addPoint->setPixmap(QPixmap("://resource/add.png"), QSize(16, 16));
     m_addPoint->setFixedHeight(16);
-    m_addPoint->setFixedPreferSize(QSize(16, 16));
     m_addPoint->hideButton();
     searchBoxLayout->addWidget(m_addPoint);
     m_cancelSearch=new AMLabelButton(this);
