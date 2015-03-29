@@ -1,5 +1,22 @@
 <RCC>
     <qresource prefix="/">
         <file>resource/add.png</file>
+        <file>resource/icons/Bn.png</file>
+        <file>resource/icons/Cn.png</file>
+        <file>resource/icons/DIn.png</file>
+        <file>resource/icons/DOn.png</file>
+        <file>resource/icons/EAn.png</file>
+        <file>resource/icons/EDn.png</file>
+        <file>resource/icons/ELDn.png</file>
+        <file>resource/icons/ELn.png</file>
+        <file>resource/icons/ELUn.png</file>
+        <file>resource/icons/ESDn.png</file>
+        <file>resource/icons/ESn.png</file>
+        <file>resource/icons/ESUn.png</file>
+        <file>resource/icons/Qn.png</file>
+        <file>resource/icons/SCn.png</file>
+        <file>resource/icons/Sn.png</file>
+        <file>resource/icons/Wn.png</file>
+        <file>resource/icons/WTn.png</file>
     </qresource>
 </RCC>

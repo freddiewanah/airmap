@@ -8,7 +8,10 @@ SOURCES += \
     amlabelbutton.cpp \
     amlineedit.cpp \
     ammappainter.cpp \
-    amsearchsuggetions.cpp
+    amsearchsuggetions.cpp \
+    amsuggestionmodel.cpp \
+    amsuggestiondelegate.cpp \
+    amsuggestionfiltermodel.cpp
 
 HEADERS += \
     ammainwindow.h \
@@ -17,7 +20,10 @@ HEADERS += \
     amlabelbutton.h \
     amlineedit.h \
     ammappainter.h \
-    amsearchsuggetions.h
+    amsearchsuggetions.h \
+    amsuggestionmodel.h \
+    amsuggestiondelegate.h \
+    amsuggestionfiltermodel.h
 
 RESOURCES += \
     res.qrc

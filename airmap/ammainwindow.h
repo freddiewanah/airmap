@@ -29,16 +29,18 @@ public slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
-
-protected:
     void startSearch();
 
 private slots:
+    void filterChanged(const QString &text);
+    void currentSuggestionChanged(const QModelIndex &current,
+                                  const QModelIndex &previous);
     void onActionCancelSearch();
     void onActionSearchFocusIn();
     void onActionSearchFocusOut();
 
 private:
+    inline void hideSearchHelperWidgets();
     AMLocationManagerBase *m_locationManager=nullptr;
     AMSearcherBase *m_searcher=nullptr;
     AMLineEdit *m_searchBoxText;

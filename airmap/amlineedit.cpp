@@ -4,6 +4,9 @@
 
 AMLineEdit::AMLineEdit(QWidget *parent) : QLineEdit(parent)
 {
+    //Set properties.
+    setTextMargins(5,5,5,5);
+    //Initial the place holder label.
     m_placeHolder=new QLabel(this);
     QPalette pal=m_placeHolder->palette();
     pal.setColor(QPalette::WindowText, QColor(0,0,0,120));
