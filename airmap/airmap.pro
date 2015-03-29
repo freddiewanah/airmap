@@ -19,3 +19,6 @@ HEADERS += \
     ammappainter.h \
     amsearchsuggetions.h
 
+RESOURCES += \
+    res.qrc
+

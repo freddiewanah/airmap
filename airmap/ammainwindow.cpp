@@ -23,7 +23,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_searchBox->setFixedHeight(45);
     m_searchBox->setAutoFillBackground(true);
     QPalette pal=m_searchBox->palette();
-    pal.setColor(QPalette::Window, QColor(0,0,0,127));
+    pal.setColor(QPalette::Window, QColor(244,244,244));
     m_searchBox->setPalette(pal);
     //Initial the search bar layout.
     QBoxLayout *searchBoxLayout=new QBoxLayout(QBoxLayout::LeftToRight,
@@ -38,14 +38,17 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
             this, &AMMainWindow::startSearch);
     m_searchBoxText->setFrame(false);
     pal=m_searchBoxText->palette();
-    pal.setColor(QPalette::Base, QColor(255,255,255,40));
-    pal.setColor(QPalette::Text, QColor(255,255,255,240));
+    pal.setColor(QPalette::Base, QColor(0xd4,0xd4,0xd4));
+    pal.setColor(QPalette::Text, QColor(0,0,0));
     pal.setColor(QPalette::Highlight, QColor(255,255,255,70));
     pal.setColor(QPalette::HighlightedText, QColor(255,255,255));
     m_searchBoxText->setPalette(pal);
     searchBoxLayout->addWidget(m_searchBoxText);
     m_addPoint=new AMLabelButton(this);
-    m_addPoint->setText("+");
+    m_addPoint->setPixmap(QPixmap("://resource/add.png"));
+    m_addPoint->setScaledContents(true);
+    m_addPoint->setFixedHeight(16);
+    m_addPoint->setFixedPreferSize(QSize(16, 16));
     m_addPoint->hideButton();
     searchBoxLayout->addWidget(m_addPoint);
     m_cancelSearch=new AMLabelButton(this);
@@ -148,8 +151,10 @@ void AMMainWindow::startSearch()
 
 void AMMainWindow::onActionCancelSearch()
 {
-    m_searchBoxText->clear();
     m_mapView->setFocus(Qt::MouseFocusReason);
+    m_searchBoxText->clear();
+    //Hide the search suggestions.
+    onActionSearchFocusOut();
 }
 
 void AMMainWindow::onActionSearchFocusIn()
@@ -170,6 +175,11 @@ void AMMainWindow::onActionSearchFocusIn()
 
 void AMMainWindow::onActionSearchFocusOut()
 {
+    //Check if the focus is on the search suggestion.
+    if(m_searchSuggestion->hasFocus())
+    {
+        return;
+    }
     //Hide search button
     m_cancelSearch->hideButton();
     //Hide add button.
