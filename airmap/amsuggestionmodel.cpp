@@ -20,92 +20,94 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
 
     for(int i=0; i<CategoriesCount; i++)
     {
-        QStandardItem *categoryItem=new QStandardItem(categoryCaption[i]);
-        categoryItem->setFlags(Qt::NoItemFlags);
-        categoryItem->setSelectable(false);
-        appendRow(categoryItem);
+        m_categoryItem[i]=new QStandardItem(categoryCaption[i]);
+        m_categoryItem[i]->setFlags(Qt::NoItemFlags);
+        m_categoryItem[i]->setEnabled(false);
+        m_categoryItem[i]->setEditable(false);
+        m_categoryItem[i]->setSelectable(false);
+        appendRow(m_categoryItem[i]);
     }
 
-    QStandardItem *currentCategory;
-    currentCategory=item(RuKou, 0);
-    for(int i=1; i<=3; i++)
+    QStandardItem *currentCategory, *categoryItem;
+    currentCategory=m_categoryItem[RuKou];
+    for(int i=3; i>=1; i--)
     {
-        QStandardItem *ruKouItem=new QStandardItem("入口 "+QString::number(i));
-        ruKouItem->setIcon(QIcon("://resource/icons/DIn.png"));
-        ruKouItem->setEditable(false);
-        currentCategory->appendRow(ruKouItem);
+        categoryItem=new QStandardItem("入口 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/DIn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(ChuKou, 0);
-    for(int i=1; i<=3; i++)
+    currentCategory=m_categoryItem[ChuKou];
+    for(int i=3; i>=1; i--)
     {
-        QStandardItem *chuKouItem=new QStandardItem("出口 "+QString::number(i));
-        chuKouItem->setIcon(QIcon("://resource/icons/DOn.png"));
-        chuKouItem->setEditable(false);
-        currentCategory->appendRow(chuKouItem);
+        categoryItem=new QStandardItem("出口 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/DOn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(DengJiKou, 0);
-    for(int i=1; i<=18; i++)
+    currentCategory=m_categoryItem[DengJiKou];
+    for(int i=18; i>=1; i--)
     {
-        QStandardItem *dengJiKouItem=new QStandardItem("登机口 "+QString::number(i));
-        dengJiKouItem->setIcon(QIcon("://resource/icons/EDn.png"));
-        dengJiKouItem->setEditable(false);
-        dengJiKouItem->setSelectable(true);
-        currentCategory->appendRow(dengJiKouItem);
+        categoryItem=new QStandardItem("登机口 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/EDn.png"));
+        categoryItem->setEditable(false);
+        categoryItem->setSelectable(true);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(ZhiJiGuiTai, 0);
-    for(int i=1; i<=6; i++)
+    currentCategory=m_categoryItem[ZhiJiGuiTai];
+    for(int i=6; i>=1; i--)
     {
-        QStandardItem *zhiJiGuiTaiItem=new QStandardItem("值机柜台 "+QString::number(i));
-        zhiJiGuiTaiItem->setIcon(QIcon("://resource/icons/Cn.png"));
-        zhiJiGuiTaiItem->setEditable(false);
-        currentCategory->appendRow(zhiJiGuiTaiItem);
+        categoryItem=new QStandardItem("值机柜台 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/Cn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(AnJianKou, 0);
-    for(int i=1; i<=3; i++)
+    currentCategory=m_categoryItem[AnJianKou];
+    for(int i=3; i>=1; i--)
     {
-        QStandardItem *anJianKouItem=new QStandardItem("安检口 "+QString::number(i));
-        anJianKouItem->setIcon(QIcon("://resource/icons/SCn.png"));
-        anJianKouItem->setEditable(false);
-        currentCategory->appendRow(anJianKouItem);
+        categoryItem=new QStandardItem("安检口 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/SCn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(WeiShengJian, 0);
-    for(int i=1; i<=8; i++)
+    currentCategory=m_categoryItem[WeiShengJian];
+    for(int i=8; i>=1; i--)
     {
-        QStandardItem *weiShengJianItem=new QStandardItem("卫生间 "+QString::number(i));
-        weiShengJianItem->setIcon(QIcon("://resource/icons/Wn.png"));
-        weiShengJianItem->setEditable(false);
-        currentCategory->appendRow(weiShengJianItem);
+        categoryItem=new QStandardItem("卫生间 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/Wn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(YinShuiChu, 0);
-    for(int i=1; i<=10; i++)
+    currentCategory=m_categoryItem[YinShuiChu];
+    for(int i=10; i>=1; i--)
     {
-        QStandardItem *yinShuiChuItem=new QStandardItem("饮水处 "+QString::number(i));
-        yinShuiChuItem->setIcon(QIcon("://resource/icons/WTn.png"));
-        yinShuiChuItem->setEditable(false);
-        currentCategory->appendRow(yinShuiChuItem);
+        categoryItem=new QStandardItem("饮水处 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/WTn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(XunWenChu, 0);
-    for(int i=1; i<=2; i++)
+    currentCategory=m_categoryItem[XunWenChu];
+    for(int i=2; i>=1; i--)
     {
-        QStandardItem *xunWenChuItem=new QStandardItem("询问处 "+QString::number(i));
-        xunWenChuItem->setIcon(QIcon("://resource/icons/Qn.png"));
-        xunWenChuItem->setEditable(false);
-        currentCategory->appendRow(xunWenChuItem);
+        categoryItem=new QStandardItem("询问处 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/Qn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=item(XingLiPan, 0);
-    for(int i=1; i<=2; i++)
+    currentCategory=m_categoryItem[XingLiPan];
+    for(int i=2; i>=1; i--)
     {
-        QStandardItem *xingLiPanItem=new QStandardItem("询问处 "+QString::number(i));
-        xingLiPanItem->setIcon(QIcon("://resource/icons/Bn.png"));
-        xingLiPanItem->setEditable(false);
-        currentCategory->appendRow(xingLiPanItem);
+        categoryItem=new QStandardItem("询问处 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/Bn.png"));
+        categoryItem->setEditable(false);
+        insertRow(currentCategory->row()+1, categoryItem);
     }
 }

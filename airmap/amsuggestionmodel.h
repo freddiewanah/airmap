@@ -30,6 +30,7 @@ private:
         XingLiPan,
         CategoriesCount
     };
+    QStandardItem *m_categoryItem[CategoriesCount];
 };
 
 #endif // AMSUGGESTIONMODEL_H

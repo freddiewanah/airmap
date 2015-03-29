@@ -71,7 +71,7 @@ void AMLabelButton::paintEvent(QPaintEvent *event)
     }
     else
     {
-        painter.drawPixmap(width()-m_pixmap.width(),
+        painter.drawPixmap((width()-m_pixmap.width())>>1,
                            0,
                            m_pixmap);
     }

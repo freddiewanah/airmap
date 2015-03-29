@@ -31,9 +31,16 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     searchBoxLayout->setContentsMargins(5,0,5,0);
     searchBoxLayout->setSpacing(0);
     m_searchBox->setLayout(searchBoxLayout);
+    m_addPoint=new AMLabelButton(this);
+    m_addPoint->setPixmap(QPixmap("://resource/add.png"), QSize(16, 16));
+    m_addPoint->setFixedHeight(16);
+    m_addPoint->hideButton();
+    searchBoxLayout->addWidget(m_addPoint);
     m_searchBoxText=new AMLineEdit(this);
     m_searchBoxText->setPlaceHolderLabelText("搜索或输入地点");
     m_searchBoxText->setFixedHeight(30);
+    connect(m_searchBoxText, &AMLineEdit::textChanged,
+            this, &AMMainWindow::filterChanged);
     connect(m_searchBoxText, &AMLineEdit::returnPressed,
             this, &AMMainWindow::startSearch);
     m_searchBoxText->setFrame(false);
@@ -44,11 +51,6 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     pal.setColor(QPalette::HighlightedText, QColor(255,255,255));
     m_searchBoxText->setPalette(pal);
     searchBoxLayout->addWidget(m_searchBoxText);
-    m_addPoint=new AMLabelButton(this);
-    m_addPoint->setPixmap(QPixmap("://resource/add.png"), QSize(16, 16));
-    m_addPoint->setFixedHeight(16);
-    m_addPoint->hideButton();
-    searchBoxLayout->addWidget(m_addPoint);
     m_cancelSearch=new AMLabelButton(this);
     m_cancelSearch->setText("取消");
     m_cancelSearch->hideButton();
@@ -69,8 +71,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_searchSuggestion->setGeometry(0,-10,0,10);
     //When search suggestion has a selected item, the item will be the
     //item you want to search.
-    connect(m_searchSuggestion->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &AMMainWindow::currentSuggestionChanged);
+//    connect(m_searchSuggestion->selectionModel(), &QItemSelectionModel::currentChanged,
+//            this, &AMMainWindow::currentSuggestionChanged);
     m_showSuggestion=new QPropertyAnimation(m_searchSuggestion,
                                             "geometry",
                                             this);
@@ -84,6 +86,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     //Initial the graphics scene for the map painting.
     m_mapScene=new QGraphicsScene(this);
     m_mapView=new QGraphicsView(m_mapScene, this);
+    m_mapView->setFrameShape(QFrame::NoFrame);
     //Set the map view.
 //    ;
 
@@ -155,6 +158,11 @@ void AMMainWindow::startSearch()
     }
 }
 
+void AMMainWindow::filterChanged(const QString &text)
+{
+    m_searchSuggestion->searchText(text);
+}
+
 void AMMainWindow::currentSuggestionChanged(const QModelIndex &current,
                                             const QModelIndex &previous)
 {
@@ -180,6 +188,12 @@ void AMMainWindow::onActionCancelSearch()
 
 void AMMainWindow::onActionSearchFocusIn()
 {
+    //Check if the cancel button has been shown or not.
+    //If the button is showed, ignore the show animation request.
+    if(m_cancelSearch->width()>0)
+    {
+        return;
+    }
     //Show cancel button.
     m_cancelSearch->showButton();
     //Show add button.
