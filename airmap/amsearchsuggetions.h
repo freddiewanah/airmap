@@ -3,6 +3,7 @@
 
 #include <QTreeView>
 
+class AMSuggestionModel;
 class AMSearchSuggetions : public QTreeView
 {
     Q_OBJECT
@@ -13,6 +14,8 @@ signals:
 
 public slots:
 
+private:
+    AMSuggestionModel *m_suggestionModel;
 };
 
 #endif // AMSEARCHSUGGETIONS_H

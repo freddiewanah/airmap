@@ -50,7 +50,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_addPoint->hideButton();
     searchBoxLayout->addWidget(m_addPoint);
     m_cancelSearch=new AMLabelButton(this);
-    m_cancelSearch->setText(tr("Cancel"));
+    m_cancelSearch->setText("取消");
     m_cancelSearch->hideButton();
     connect(m_searchBoxText, &AMLineEdit::focusIn,
             this, &AMMainWindow::onActionSearchFocusIn);
@@ -60,13 +60,17 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
             this, &AMMainWindow::onActionCancelSearch);
     searchBoxLayout->addWidget(m_cancelSearch);
     m_stopNavigate=new AMLabelButton(this);
-    m_stopNavigate->setText(tr("End"));
+    m_stopNavigate->setText("结束");
     m_stopNavigate->hideButton();
     searchBoxLayout->addWidget(m_stopNavigate);
 
     //Initial the search suggestion widget.
     m_searchSuggestion=new AMSearchSuggetions(this);
     m_searchSuggestion->setGeometry(0,-10,0,10);
+    //When search suggestion has a selected item, the item will be the
+    //item you want to search.
+    connect(m_searchSuggestion->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &AMMainWindow::currentSuggestionChanged);
     m_showSuggestion=new QPropertyAnimation(m_searchSuggestion,
                                             "geometry",
                                             this);
@@ -125,12 +129,12 @@ void AMMainWindow::resizeEvent(QResizeEvent *event)
     //Check search widget position.
     if(m_searchSuggestion->y()>0)
     {
-        QSize suggestionSize=QSize(width(), height()-m_searchBoxHeight);
+        QSize suggestionSize=QSize(width(), height()-m_searchBoxHeight+5);
         m_searchSuggestion->resize(suggestionSize);
         //Check if search suggestion animation is running.
         if(m_showSuggestion->state()==QAbstractAnimation::Running)
         {
-            m_showSuggestion->setEndValue(QRect(QPoint(0, m_searchBoxHeight),
+            m_showSuggestion->setEndValue(QRect(QPoint(0, m_searchBoxHeight-5),
                                                 suggestionSize));
         }
     }
@@ -138,13 +142,32 @@ void AMMainWindow::resizeEvent(QResizeEvent *event)
 
 void AMMainWindow::startSearch()
 {
+    //Hide the suggestions and buttons.
+    hideSearchHelperWidgets();
+    //Show the stop button.
+    m_stopNavigate->showButton();
+    //Ask searcher to search.
+    qDebug()<<m_searchBoxText->text();
     //Ensure the loacation manager and searcher exist.
     if(m_locationManager==nullptr || m_searcher==nullptr)
     {
         return;
     }
-    //Ask searcher to search.
-    qDebug()<<m_searchBoxText->text();
+}
+
+void AMMainWindow::currentSuggestionChanged(const QModelIndex &current,
+                                            const QModelIndex &previous)
+{
+    Q_UNUSED(previous)
+    //Check if the current is a vaild item.
+    if(current.isValid())
+    {
+        //Set the search text to the current item.
+        m_searchBoxText->setText(current.data(Qt::DisplayRole).toString());
+        //Start to search the item.
+        startSearch();
+    }
+    ;
 }
 
 void AMMainWindow::onActionCancelSearch()
@@ -161,13 +184,19 @@ void AMMainWindow::onActionSearchFocusIn()
     m_cancelSearch->showButton();
     //Show add button.
     m_addPoint->showButton();
+    //Reset the search suggestion.
+    m_searchSuggestion->scrollToTop();
+    m_searchSuggestion->selectionModel()->clearSelection();
     //Show search suggestion.
     m_hideSuggestion->stop();
-    m_showSuggestion->setStartValue(m_searchSuggestion->geometry());
+    m_showSuggestion->setStartValue(QRect(m_searchSuggestion->x(),
+                                          m_searchSuggestion->y(),
+                                          width(),
+                                          m_searchSuggestion->height()));
     m_showSuggestion->setEndValue(QRect(0,
-                                        m_searchBoxHeight,
+                                        m_searchBoxHeight-5,
                                         width(),
-                                        height()-m_searchBoxHeight));
+                                        height()-m_searchBoxHeight+5));
     m_showSuggestion->start();
 }
 
@@ -178,13 +207,22 @@ void AMMainWindow::onActionSearchFocusOut()
     {
         return;
     }
+    //Hide search suggestion and other widgets.
+    hideSearchHelperWidgets();
+}
+
+inline void AMMainWindow::hideSearchHelperWidgets()
+{
     //Hide search button
     m_cancelSearch->hideButton();
     //Hide add button.
     m_addPoint->hideButton();
     //Hide search suggestion.
     m_showSuggestion->stop();
-    m_hideSuggestion->setStartValue(m_searchSuggestion->geometry());
+    m_hideSuggestion->setStartValue(QRect(m_searchSuggestion->x(),
+                                          m_searchSuggestion->y(),
+                                          width(),
+                                          m_searchSuggestion->height()));
     m_hideSuggestion->setEndValue(QRect(0,-10,width(),10));
     m_hideSuggestion->start();
 }
