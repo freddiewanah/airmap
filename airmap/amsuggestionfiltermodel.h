@@ -13,6 +13,9 @@ public:
 signals:
 
 public slots:
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 };
 
 #endif // AMSUGGESTIONFILTERMODEL_H

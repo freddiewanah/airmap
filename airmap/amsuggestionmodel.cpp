@@ -35,6 +35,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("入口 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/DIn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("D" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -44,6 +45,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("出口 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/DOn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("D" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -54,6 +56,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/EDn.png"));
         categoryItem->setEditable(false);
         categoryItem->setSelectable(true);
+        categoryItem->setData("E" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -63,6 +66,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("值机柜台 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Cn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("C" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -72,6 +76,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("安检口 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/SCn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("SC" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -81,6 +86,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("卫生间 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Wn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("W" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -90,6 +96,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("饮水处 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/WTn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("WT" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -99,6 +106,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("询问处 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Qn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("Q" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -108,6 +116,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("询问处 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Bn.png"));
         categoryItem->setEditable(false);
+        categoryItem->setData("B" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 }

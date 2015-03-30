@@ -69,43 +69,29 @@ void AMSearchSuggetions::searchText(const QString &text)
     m_proxyModel->setFilterFixedString(text);
 }
 
-bool AMSearchSuggetions::event(QEvent *event)
-{
-    if (event->type()==QEvent::Gesture)
-    {
-        return gestureEvent(static_cast<QGestureEvent*>(event));
-    }
-    return QTreeView::event(event);
-}
-
-bool AMSearchSuggetions::gestureEvent(QGestureEvent *event)
-{
-    if(QGesture *pan=event->gesture(Qt::PanGesture))
-    {
-        panTriggered(static_cast<QPanGesture *>(pan));
-    }
-    return true;
-}
-
 void AMSearchSuggetions::mousePressEvent(QMouseEvent *event)
 {
     //Set the flag.
-    m_pressed=true;
-    //Do mouse pressed event.
+    m_pressed=true;m_moved=false;
+    //Save the position.
+    m_pressedPoint=event->pos();
+    m_pressedScrollBarValue=verticalScrollBar()->value();
     QTreeView::mousePressEvent(event);
 }
 
 void AMSearchSuggetions::mouseReleaseEvent(QMouseEvent *event)
 {
-    QTreeView::mouseReleaseEvent(event);
+    if(!m_moved)
+    {
+        QTreeView::mouseReleaseEvent(event);
+    }
 }
 
 void AMSearchSuggetions::mouseMoveEvent(QMouseEvent *event)
 {
-    QTreeView::mouseMoveEvent(event);
-}
-
-void AMSearchSuggetions::panTriggered(QPanGesture *gesture)
-{
-    qDebug()<<"Triggered.";
+    //Set moved flag.
+    m_moved=true;
+    //Move the scroll area.
+    verticalScrollBar()->setValue(m_pressedScrollBarValue-(event->pos().y()-m_pressedPoint.y()));
+//    QTreeView::mouseMoveEvent(event);
 }

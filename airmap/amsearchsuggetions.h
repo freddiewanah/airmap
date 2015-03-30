@@ -19,17 +19,16 @@ public slots:
     void searchText(const QString &text);
 
 protected:
-    bool event(QEvent *event);
-    bool gestureEvent(QGestureEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    void panTriggered(QPanGesture *gesture);
     AMSuggestionModel *m_suggestionModel;
     AMSuggestionFilterModel *m_proxyModel;
-    bool m_pressed=false;
+    bool m_pressed=false, m_moved=false;
+    int m_pressedScrollBarValue=-1;
+    QPoint m_pressedPoint;
 };
 
 #endif // AMSEARCHSUGGETIONS_H
