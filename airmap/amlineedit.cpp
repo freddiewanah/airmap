@@ -33,12 +33,18 @@ void AMLineEdit::setPlaceHolderLabelText(const QString &text)
 
 void AMLineEdit::focusInEvent(QFocusEvent *event)
 {
+    //Select all text.
+    selectAll();
+    //Emit focus in signal.
     emit focusIn();
     QLineEdit::focusInEvent(event);
 }
 
 void AMLineEdit::focusOutEvent(QFocusEvent *event)
 {
+    //Cancel selection.
+    setSelection(0,0);
+    //Emit focus out signal.
     emit focusOut();
     QLineEdit::focusOutEvent(event);
 }

@@ -71,8 +71,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_searchSuggestion->setGeometry(0,-10,0,10);
     //When search suggestion has a selected item, the item will be the
     //item you want to search.
-//    connect(m_searchSuggestion->selectionModel(), &QItemSelectionModel::currentChanged,
-//            this, &AMMainWindow::currentSuggestionChanged);
+    connect(m_searchSuggestion, &AMSearchSuggetions::requireSearch,
+            this, &AMMainWindow::onActionSearch);
     m_showSuggestion=new QPropertyAnimation(m_searchSuggestion,
                                             "geometry",
                                             this);
@@ -163,10 +163,8 @@ void AMMainWindow::filterChanged(const QString &text)
     m_searchSuggestion->searchText(text);
 }
 
-void AMMainWindow::currentSuggestionChanged(const QModelIndex &current,
-                                            const QModelIndex &previous)
+void AMMainWindow::onActionSearch(const QModelIndex &current)
 {
-    Q_UNUSED(previous)
     //Check if the current is a vaild item.
     if(current.isValid())
     {

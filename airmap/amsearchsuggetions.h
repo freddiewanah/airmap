@@ -14,6 +14,7 @@ public:
     explicit AMSearchSuggetions(QWidget *parent = 0);
 
 signals:
+    void requireSearch(QModelIndex index);
 
 public slots:
     void searchText(const QString &text);
@@ -29,6 +30,7 @@ private:
     bool m_pressed=false, m_moved=false;
     int m_pressedScrollBarValue=-1;
     QPoint m_pressedPoint;
+    QModelIndex m_pressedIndex;
 };
 
 #endif // AMSEARCHSUGGETIONS_H

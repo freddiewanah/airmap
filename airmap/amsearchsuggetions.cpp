@@ -15,7 +15,6 @@
 AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
     QTreeView(parent)
 {
-#ifdef Q_OS_ANDROID
     verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
                                        "   border: 0px solid grey;"
                                        "   background: rgba(0, 0, 0, 0);"
@@ -40,7 +39,6 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
                                        "   subcontrol-position: up;"
                                        "   subcontrol-origin: margin;"
                                        "}");
-#endif
     //Set properties.
     setFrameShape(QFrame::NoFrame);
     setFrameShadow(QFrame::Plain);
@@ -76,22 +74,39 @@ void AMSearchSuggetions::mousePressEvent(QMouseEvent *event)
     //Save the position.
     m_pressedPoint=event->pos();
     m_pressedScrollBarValue=verticalScrollBar()->value();
-    QTreeView::mousePressEvent(event);
+    //Get the pressed index.
+    m_pressedIndex=indexAt(event->pos());
+    setCurrentIndex(m_pressedIndex);
 }
 
 void AMSearchSuggetions::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event)
+    //If user just click/touch the item, emit the search signal.
     if(!m_moved)
     {
-        QTreeView::mouseReleaseEvent(event);
+        //Check the index is available or not.
+        QStandardItem *currentItem=m_suggestionModel->itemFromIndex(m_proxyModel->mapToSource(m_pressedIndex));
+        if(currentItem->isSelectable())
+        {
+            emit requireSearch(m_pressedIndex);
+        }
     }
+    //Clear the flag.
+    m_pressed=false;
+    m_moved=false;
 }
 
 void AMSearchSuggetions::mouseMoveEvent(QMouseEvent *event)
 {
     //Set moved flag.
     m_moved=true;
-    //Move the scroll area.
-    verticalScrollBar()->setValue(m_pressedScrollBarValue-(event->pos().y()-m_pressedPoint.y()));
-//    QTreeView::mouseMoveEvent(event);
+    //Clear the selection if mouse pressed.
+    if(m_pressed)
+    {
+        //Clear the selection.
+        clearSelection();
+        //Move the scroll area.
+        verticalScrollBar()->setValue(m_pressedScrollBarValue-(event->pos().y()-m_pressedPoint.y()));
+    }
 }
