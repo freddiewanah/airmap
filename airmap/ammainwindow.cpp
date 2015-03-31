@@ -18,6 +18,11 @@
 AMMainWindow::AMMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    //Initial the graphics scene for the map painting.
+    m_mapScene=new QGraphicsScene(this);
+    m_mapView=new QGraphicsView(m_mapScene, this);
+    m_mapView->setFrameShape(QFrame::NoFrame);
+
     //Initial the search bar.
     m_searchBox=new QWidget(this);
     m_searchBox->setFixedHeight(45);
@@ -83,10 +88,6 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_hideSuggestion->setEasingCurve(QEasingCurve::OutCubic);
     m_hideSuggestion->setEndValue(QRect(0,-10,width(),10));
 
-    //Initial the graphics scene for the map painting.
-    m_mapScene=new QGraphicsScene(this);
-    m_mapView=new QGraphicsView(m_mapScene, this);
-    m_mapView->setFrameShape(QFrame::NoFrame);
     //Set the map view.
 //    ;
 
