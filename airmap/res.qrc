@@ -18,5 +18,9 @@
         <file>resource/icons/Sn.png</file>
         <file>resource/icons/Wn.png</file>
         <file>resource/icons/WTn.png</file>
+        <file>resource/maps/square_0_2d_B1s.png</file>
+        <file>resource/maps/square_0_2d_F1s.png</file>
+        <file>resource/maps/square_0_2d_F2s.png</file>
+        <file>resource/maps/square_0_2d_F2s.json</file>
     </qresource>
 </RCC>

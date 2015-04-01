@@ -3,10 +3,12 @@
 
 #include <QMainWindow>
 
+class QGraphicsProxyWidget;
 class QGraphicsView;
 class QGraphicsScene;
 class QPropertyAnimation;
 class AMLineEdit;
+class AMMapPainter;
 class AMLabelButton;
 class AMLocationManagerBase;
 class AMSearcherBase;
@@ -50,6 +52,8 @@ private:
 
     QGraphicsView *m_mapView;
     QGraphicsScene *m_mapScene;
+    QGraphicsProxyWidget *m_mapItem;
+    AMMapPainter *m_mapPainter;
     QWidget *m_searchBox;
 
     //Some consts.

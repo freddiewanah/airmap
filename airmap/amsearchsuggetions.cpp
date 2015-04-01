@@ -17,7 +17,7 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
 {
     verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
                                        "   border: 0px solid grey;"
-                                       "   background: rgba(0, 0, 0, 0);"
+                                       "   background: rgba(128,128,128,255);"
                                        "   width: 8px;"
                                        "}"
                                        "QScrollBar::handle:vertical {"
@@ -47,7 +47,7 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
     header()->setVisible(false);
     //Set palette.
     QPalette pal=palette();
-    pal.setColor(QPalette::Base, QColor(0,0,0,100));
+    pal.setColor(QPalette::Base, QColor(100,100,100, 240));
     pal.setColor(QPalette::WindowText, QColor(0,0,0));
     pal.setColor(QPalette::Text, QColor(0,0,0));
     setPalette(pal);

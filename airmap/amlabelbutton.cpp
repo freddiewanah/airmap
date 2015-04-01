@@ -1,12 +1,17 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QTimeLine>
+#include <QGraphicsColorizeEffect>
 
 #include "amlabelbutton.h"
 
 AMLabelButton::AMLabelButton(QWidget *parent) :
     QWidget(parent)
 {
+    //Initial the color effect.
+    QGraphicsColorizeEffect *effect=new QGraphicsColorizeEffect(this);
+    effect->setColor(QColor(255,255,255,128));
+    setGraphicsEffect(effect);
     //Set contents margins.
     setContentsMargins(5,5,5,5);
     //Set palette.
