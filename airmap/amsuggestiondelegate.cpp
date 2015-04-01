@@ -22,11 +22,11 @@ void AMSuggestionDelegate::paint(QPainter *painter,
     if(index.data(Qt::DecorationRole).isNull())
     {
         //Draw background first.
-        painter->fillRect(option.rect, QColor(255,255,255,100));
+        painter->fillRect(option.rect, QColor(255,255,255,64));
         QFont captionFont=option.font;
         captionFont.setPixelSize(11);
         painter->setFont(captionFont);
-        painter->setPen(option.palette.color(QPalette::Disabled, QPalette::WindowText));
+        painter->setPen(QColor(255,255,255,128));
         //Means this is a title row. Draw it as a title.
         painter->drawText(option.rect.x()+16,
                           option.rect.y(),
@@ -39,7 +39,7 @@ void AMSuggestionDelegate::paint(QPainter *painter,
     //Draw the selected background if current item has been selected.
     if(option.state & QStyle::State_Selected)
     {
-        painter->fillRect(option.rect, QColor(255,255,255,150));
+        painter->fillRect(option.rect, QColor(255,255,255,96));
     }
     //Draw the icon.
     painter->drawPixmap(option.rect.x()+16,
@@ -52,6 +52,7 @@ void AMSuggestionDelegate::paint(QPainter *painter,
     itemFont.setPixelSize(15);
     painter->setFont(itemFont);
     painter->setPen(option.palette.color(QPalette::Normal, QPalette::WindowText));
+    painter->setPen(QColor(255,255,255));
     painter->drawText(option.rect.x()+66,
                       option.rect.y(),
                       option.rect.width(),

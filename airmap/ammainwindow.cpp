@@ -2,9 +2,11 @@
 #include <QLineEdit>
 #include <QResizeEvent>
 #include <QGraphicsView>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QPropertyAnimation>
 
+#include "ammappainter.h"
 #include "amlabelbutton.h"
 #include "amlineedit.h"
 #include "amlocationmanagerbase.h"
@@ -22,13 +24,21 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapScene=new QGraphicsScene(this);
     m_mapView=new QGraphicsView(m_mapScene, this);
     m_mapView->setFrameShape(QFrame::NoFrame);
+    //Initial the map painter.
+    m_mapPainter=new AMMapPainter;
+    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F1s.png"),
+                         "://resource/maps/square_0_2d_F2s.json");
+    //Initial the map graphics proxy widget.
+    m_mapItem=new QGraphicsProxyWidget(0, Qt::Widget);
+    m_mapItem->setWidget(m_mapPainter);
+    m_mapScene->addItem(m_mapItem);
 
     //Initial the search bar.
     m_searchBox=new QWidget(this);
     m_searchBox->setFixedHeight(45);
     m_searchBox->setAutoFillBackground(true);
     QPalette pal=m_searchBox->palette();
-    pal.setColor(QPalette::Window, QColor(244,244,244));
+    pal.setColor(QPalette::Window, QColor(128,128,128));
     m_searchBox->setPalette(pal);
     //Initial the search bar layout.
     QBoxLayout *searchBoxLayout=new QBoxLayout(QBoxLayout::LeftToRight,
@@ -50,10 +60,10 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
             this, &AMMainWindow::startSearch);
     m_searchBoxText->setFrame(false);
     pal=m_searchBoxText->palette();
-    pal.setColor(QPalette::Base, QColor(0xd4,0xd4,0xd4));
     pal.setColor(QPalette::Text, QColor(0,0,0));
     pal.setColor(QPalette::Highlight, QColor(255,255,255,70));
     pal.setColor(QPalette::HighlightedText, QColor(255,255,255));
+    pal.setColor(QPalette::Base, QColor(255,255,255,128));
     m_searchBoxText->setPalette(pal);
     searchBoxLayout->addWidget(m_searchBoxText);
     m_cancelSearch=new AMLabelButton(this);
