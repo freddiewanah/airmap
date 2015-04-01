@@ -33,8 +33,7 @@ protected:
 
 private slots:
     void filterChanged(const QString &text);
-    void currentSuggestionChanged(const QModelIndex &current,
-                                  const QModelIndex &previous);
+    void onActionSearch(const QModelIndex &current);
     void onActionCancelSearch();
     void onActionSearchFocusIn();
     void onActionSearchFocusOut();

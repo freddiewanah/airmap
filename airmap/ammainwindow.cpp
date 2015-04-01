@@ -18,6 +18,11 @@
 AMMainWindow::AMMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    //Initial the graphics scene for the map painting.
+    m_mapScene=new QGraphicsScene(this);
+    m_mapView=new QGraphicsView(m_mapScene, this);
+    m_mapView->setFrameShape(QFrame::NoFrame);
+
     //Initial the search bar.
     m_searchBox=new QWidget(this);
     m_searchBox->setFixedHeight(45);
@@ -71,8 +76,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_searchSuggestion->setGeometry(0,-10,0,10);
     //When search suggestion has a selected item, the item will be the
     //item you want to search.
-//    connect(m_searchSuggestion->selectionModel(), &QItemSelectionModel::currentChanged,
-//            this, &AMMainWindow::currentSuggestionChanged);
+    connect(m_searchSuggestion, &AMSearchSuggetions::requireSearch,
+            this, &AMMainWindow::onActionSearch);
     m_showSuggestion=new QPropertyAnimation(m_searchSuggestion,
                                             "geometry",
                                             this);
@@ -83,10 +88,6 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_hideSuggestion->setEasingCurve(QEasingCurve::OutCubic);
     m_hideSuggestion->setEndValue(QRect(0,-10,width(),10));
 
-    //Initial the graphics scene for the map painting.
-    m_mapScene=new QGraphicsScene(this);
-    m_mapView=new QGraphicsView(m_mapScene, this);
-    m_mapView->setFrameShape(QFrame::NoFrame);
     //Set the map view.
 //    ;
 
@@ -163,10 +164,8 @@ void AMMainWindow::filterChanged(const QString &text)
     m_searchSuggestion->searchText(text);
 }
 
-void AMMainWindow::currentSuggestionChanged(const QModelIndex &current,
-                                            const QModelIndex &previous)
+void AMMainWindow::onActionSearch(const QModelIndex &current)
 {
-    Q_UNUSED(previous)
     //Check if the current is a vaild item.
     if(current.isValid())
     {
