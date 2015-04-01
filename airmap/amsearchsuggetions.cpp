@@ -48,6 +48,7 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
     //Set palette.
     QPalette pal=palette();
     pal.setColor(QPalette::Base, QColor(0,0,0,100));
+    pal.setColor(QPalette::WindowText, QColor(0,0,0));
     pal.setColor(QPalette::Text, QColor(0,0,0));
     setPalette(pal);
     //Set item view delegate
