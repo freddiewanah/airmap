@@ -29,7 +29,7 @@ AMLabelButton::~AMLabelButton()
 void AMLabelButton::showButton()
 {
     //Check if the button has been shown.
-    int preferWidth=(m_pixmap.isNull()?fontMetrics().width(m_text):m_pixmap.width())+5;
+    int preferWidth=(m_pixmap.isNull()?fontMetrics().width(m_text):m_pixmap.width())+10;
     if(width()==preferWidth)
     {
         return;
