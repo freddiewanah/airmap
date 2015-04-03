@@ -45,7 +45,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("F2 出发大厅 商店 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Sn.png"));
         categoryItem->setEditable(false);
-        categoryItem->setData("F2S" + QString::number(i));
+        categoryItem->setData("f2F2S" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
     for(int i=42; i>=1; i--)
@@ -53,7 +53,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("F1 到达大厅 商店 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Sn.png"));
         categoryItem->setEditable(false);
-        categoryItem->setData("F1S" + QString::number(i));
+        categoryItem->setData("f1F1S" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -126,7 +126,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("F2 出发大厅 卫生间 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Wn.png"));
         categoryItem->setEditable(false);
-        categoryItem->setData("F2W" + QString::number(i));
+        categoryItem->setData("f2F2W" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
     for(int i=8; i>=1; i--)
@@ -134,7 +134,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("F1 到达大厅 卫生间 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/Wn.png"));
         categoryItem->setEditable(false);
-        categoryItem->setData("F1W" + QString::number(i));
+        categoryItem->setData("f1F1W" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -144,7 +144,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("F2 出发大厅 饮水处 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/WTn.png"));
         categoryItem->setEditable(false);
-        categoryItem->setData("F2WT" + QString::number(i));
+        categoryItem->setData("f2F2WT" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
     for(int i=10; i>=1; i--)
@@ -152,7 +152,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem=new QStandardItem("F1 到达大厅 饮水处 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/WTn.png"));
         categoryItem->setEditable(false);
-        categoryItem->setData("F1WT" + QString::number(i));
+        categoryItem->setData("f1F1WT" + QString::number(i));
         insertRow(currentCategory->row()+1, categoryItem);
     }
 

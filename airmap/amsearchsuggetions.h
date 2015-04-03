@@ -5,6 +5,7 @@
 
 class QPanGesture;
 class QGestureEvent;
+class QTimeLine;
 class AMSuggestionFilterModel;
 class AMSuggestionModel;
 class AMSearchSuggetions : public QTreeView
@@ -31,6 +32,7 @@ private:
     int m_pressedScrollBarValue=-1;
     QPoint m_pressedPoint;
     QModelIndex m_pressedIndex;
+    QTimeLine *m_scrollTimeLine;
 };
 
 #endif // AMSEARCHSUGGETIONS_H
