@@ -28,6 +28,16 @@ AMMapPainter::AMMapPainter(QWidget *parent) :
     //Initial the map item type name.
     m_mapItemTypeName[ShangDian]="商店";
     m_mapItemTypeName[WeiShengJian]="卫生间";
+    m_mapItemTypeName[RuKou]="入口";
+    m_mapItemTypeName[ChuKou]="出口";
+    m_mapItemTypeName[DengJiKou]="登机口";
+    m_mapItemTypeName[DianTi]="电梯";
+    m_mapItemTypeName[FuTi]="扶梯";
+    m_mapItemTypeName[ZhiJiGuiTai]="值机柜台";
+    m_mapItemTypeName[AnJianKou]="安检口";
+    m_mapItemTypeName[YinShuiChu]="饮水处";
+    m_mapItemTypeName[XunWenChu]="询问处";
+    m_mapItemTypeName[XingLiPan]="行李盘";
 }
 
 void AMMapPainter::addMap(const QPixmap &pixmap, const QString &mapInfoFilePath)

@@ -4,6 +4,9 @@
     "MapName": "出发大厅",
     "MapItems": [
         [42,42,112,75,"WeiShengJian",7],
-        [312,312,75,75,"ShangDian",25]
+        [312,312,75,75,"ShangDian",25],
+        [312,388,75,75,"ShangDian",26],
+        [312,460,75,75,"ShangDian",27],
+
     ]
 }
