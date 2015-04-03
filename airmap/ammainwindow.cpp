@@ -26,7 +26,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;
-    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F1s.png"),
+    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
                          "://resource/maps/square_0_2d_F2s.json");
     //Initial the map graphics proxy widget.
     m_mapItem=new QGraphicsProxyWidget(0, Qt::Widget);
