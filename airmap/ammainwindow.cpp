@@ -1,5 +1,6 @@
 #include <QBoxLayout>
 #include <QLineEdit>
+#include <QScrollBar>
 #include <QResizeEvent>
 #include <QGraphicsView>
 #include <QGraphicsProxyWidget>
@@ -23,6 +24,30 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     //Initial the graphics scene for the map painting.
     m_mapScene=new QGraphicsScene(this);
     m_mapView=new QGraphicsView(m_mapScene, this);
+    m_mapView->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                  "   border: 0px solid grey;"
+                                                  "   background: rgba(64,64,64,255);"
+                                                  "   width: 8px;"
+                                                  "}"
+                                                  "QScrollBar::handle:vertical {"
+                                                  "   background: rgba(100, 100, 100);"
+                                                  "   min-height: 10px;"
+                                                  "   border-radius: 4px;"
+                                                  "}"
+                                                  "QScrollBar::add-line:vertical {"
+                                                  "   border: 0px solid grey;"
+                                                  "   background: rgba(0, 0, 0, 100);"
+                                                  "   height: 0px;"
+                                                  "   subcontrol-position: down;"
+                                                  "   subcontrol-origin: margin;"
+                                                  "}"
+                                                  "QScrollBar::sub-line:vertical {"
+                                                  "   border: 0px solid grey;"
+                                                  "   background: rgba(0, 0, 0, 100);"
+                                                  "   height: 0px;"
+                                                  "   subcontrol-position: up;"
+                                                  "   subcontrol-origin: margin;"
+                                                  "}");
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;

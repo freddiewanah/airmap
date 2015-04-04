@@ -22,5 +22,7 @@
         <file>resource/maps/square_0_2d_F1s.png</file>
         <file>resource/maps/square_0_2d_F2s.png</file>
         <file>resource/maps/square_0_2d_F2s.json</file>
+        <file>resource/maps/square_0_2d_B1s.json</file>
+        <file>resource/maps/square_0_2d_F1s.json</file>
     </qresource>
 </RCC>

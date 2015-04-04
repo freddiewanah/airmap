@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QGestureEvent>
 #include <QPanGesture>
+#include <QTimeLine>
 
 #include "amsuggestionmodel.h"
 #include "amsuggestionfiltermodel.h"
@@ -53,6 +54,12 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
     setPalette(pal);
     //Set item view delegate
     setItemDelegate(new AMSuggestionDelegate(this));
+
+    //Initial the timeline.
+    m_scrollTimeLine=new QTimeLine(500, this);
+    m_scrollTimeLine->setUpdateInterval(2);
+    connect(m_scrollTimeLine, &QTimeLine::frameChanged,
+            verticalScrollBar(), &QScrollBar::setValue);
 
     //Initial the models.
     m_proxyModel=new AMSuggestionFilterModel(this);
