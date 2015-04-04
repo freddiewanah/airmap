@@ -11,8 +11,8 @@ namespace MapPainter
 {
 enum MapItemType
 {
-    RuKou,
-    ChuKou,
+    ChuRuKou,
+    //ChuKou,
     DengJiKou,
     DianTi,
     FuTi,
