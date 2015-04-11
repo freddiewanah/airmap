@@ -71,6 +71,12 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
     expandAll();
 }
 
+bool AMSearchSuggetions::containsPlace(QString &text)
+{
+    QString preferText;
+    if();
+}
+
 void AMSearchSuggetions::searchText(const QString &text)
 {
     m_proxyModel->setFilterFixedString(text);

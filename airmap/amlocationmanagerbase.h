@@ -8,10 +8,10 @@ class AMLocationManagerBase : public QObject
     Q_OBJECT
 public:
     AMLocationManagerBase(QObject *parent = 0):QObject(parent){}
-    virtual void getCurrentPos(int &a, int &b, int &c)=0;
+    virtual void getCurrentPos(double &a, double &b, double &c)=0;
 
 signals:
-    void pointGet(int a, int b, int c);
+    void pointGet(double a, double b, double c);
 
 public slots:
     virtual void startTracking()=0;

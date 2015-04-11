@@ -3,34 +3,23 @@
 
 #include <QStandardItemModel>
 
+#include "amglobal.h"
+
+using namespace AMStd;
+
 class AMSuggestionModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
     explicit AMSuggestionModel(QObject *parent = 0);
+    QString findPlace(const QString &keyword);
 
 signals:
 
 public slots:
 
 private:
-    enum Categories
-    {
-        RuKou,
-        ChuKou,
-        DengJiKou,
-        Dianti,
-        Futi,
-        ZhiJiGuiTai,
-        AnJianKou,
-        YinShuiChu,
-        WeiShengJian,
-        XunWenChu,
-        ShangDian,
-        XingLiPan,
-        CategoriesCount
-    };
-    QStandardItem *m_categoryItem[CategoriesCount];
+    QStandardItem *m_categoryItem[MapItemTypeCount];
 };
 
 #endif // AMSUGGESTIONMODEL_H

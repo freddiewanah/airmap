@@ -4,12 +4,12 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
     QStandardItemModel(parent)
 {
     //Add the category rows.
-    QString categoryCaption[CategoriesCount];
+    QString categoryCaption[MapItemTypeCount];
     categoryCaption[RuKou]="入口";
     categoryCaption[ChuKou]="出口";
     categoryCaption[DengJiKou]="登机口";
-    categoryCaption[Dianti]="电梯";
-    categoryCaption[Futi]="扶梯";
+    categoryCaption[DianTi]="电梯";
+    categoryCaption[FuTi]="扶梯";
     categoryCaption[ZhiJiGuiTai]="值机柜台";
     categoryCaption[AnJianKou]="安检口";
     categoryCaption[YinShuiChu]="饮水处";
@@ -18,7 +18,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
     categoryCaption[ShangDian]="商店";
     categoryCaption[XingLiPan]="行李盘";
 
-    for(int i=0; i<CategoriesCount; i++)
+    for(int i=0; i<MapItemTypeCount; i++)
     {
         m_categoryItem[i]=new QStandardItem(categoryCaption[i]);
         m_categoryItem[i]->setFlags(Qt::NoItemFlags);
@@ -36,6 +36,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/DIn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("D" + QString::number(i));
+        categoryItem->setData(RuKou, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -46,6 +49,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Sn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("f2F2S" + QString::number(i));
+        categoryItem->setData(ShangDian, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
     for(int i=42; i>=1; i--)
@@ -54,6 +60,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Sn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("f1F1S" + QString::number(i));
+        categoryItem->setData(ShangDian, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -64,6 +73,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/DOn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("D" + QString::number(i));
+        categoryItem->setData(ChuKou, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -75,10 +87,13 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setEditable(false);
         categoryItem->setSelectable(true);
         categoryItem->setData("E" + QString::number(i));
+        categoryItem->setData(DengJiKou, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=m_categoryItem[Dianti];
+    currentCategory=m_categoryItem[DianTi];
     for(int i=8; i>=1; i--)
     {
         categoryItem=new QStandardItem("电梯 "+QString::number(i));
@@ -86,10 +101,13 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setEditable(false);
         categoryItem->setSelectable(true);
         categoryItem->setData("EL" + QString::number(i));
+        categoryItem->setData(DianTi, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
-    currentCategory=m_categoryItem[Futi];
+    currentCategory=m_categoryItem[FuTi];
     for(int i=8; i>=1; i--)
     {
         categoryItem=new QStandardItem("扶梯 "+QString::number(i));
@@ -97,6 +115,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setEditable(false);
         categoryItem->setSelectable(true);
         categoryItem->setData("ES" + QString::number(i));
+        categoryItem->setData(FuTi, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -107,6 +128,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Cn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("C" + QString::number(i));
+        categoryItem->setData(ZhiJiGuiTai, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -117,6 +141,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/SCn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("SC" + QString::number(i));
+        categoryItem->setData(AnJianKou, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -127,6 +154,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Wn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("f2F2W" + QString::number(i));
+        categoryItem->setData(WeiShengJian, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
     for(int i=8; i>=1; i--)
@@ -135,6 +165,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Wn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("f1F1W" + QString::number(i));
+        categoryItem->setData(WeiShengJian, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -145,6 +178,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/WTn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("f2F2WT" + QString::number(i));
+        categoryItem->setData(YinShuiChu, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
     for(int i=10; i>=1; i--)
@@ -153,6 +189,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/WTn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("f1F1WT" + QString::number(i));
+        categoryItem->setData(YinShuiChu, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -163,6 +202,9 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Qn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("Q" + QString::number(i));
+        categoryItem->setData(XunWenChu, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
 
@@ -173,6 +215,14 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setIcon(QIcon("://resource/icons/Bn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("B" + QString::number(i));
+        categoryItem->setData(XingLiPan, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
     }
+}
+
+QString AMSuggestionModel::findPlace(const QString &keyword)
+{
+    ;
 }

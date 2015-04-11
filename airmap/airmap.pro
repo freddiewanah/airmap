@@ -11,7 +11,8 @@ SOURCES += \
     amsearchsuggetions.cpp \
     amsuggestionmodel.cpp \
     amsuggestiondelegate.cpp \
-    amsuggestionfiltermodel.cpp
+    amsuggestionfiltermodel.cpp \
+    amglobal.cpp
 
 HEADERS += \
     ammainwindow.h \
@@ -23,7 +24,8 @@ HEADERS += \
     amsearchsuggetions.h \
     amsuggestionmodel.h \
     amsuggestiondelegate.h \
-    amsuggestionfiltermodel.h
+    amsuggestionfiltermodel.h \
+    amglobal.h
 
 RESOURCES += \
     res.qrc
