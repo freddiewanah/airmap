@@ -5,8 +5,7 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
 {
     //Add the category rows.
     QString categoryCaption[MapItemTypeCount];
-    categoryCaption[RuKou]="入口";
-    categoryCaption[ChuKou]="出口";
+    categoryCaption[ChuRuKou]="出入口";
     categoryCaption[DengJiKou]="登机口";
     categoryCaption[DianTi]="电梯";
     categoryCaption[FuTi]="扶梯";
@@ -29,14 +28,36 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
     }
 
     QStandardItem *currentCategory, *categoryItem;
-    currentCategory=m_categoryItem[RuKou];
+    currentCategory=m_categoryItem[ChuRuKou];
     for(int i=3; i>=1; i--)
     {
-        categoryItem=new QStandardItem("入口 "+QString::number(i));
+        categoryItem=new QStandardItem("B1 出入口 "+QString::number(i));
         categoryItem->setIcon(QIcon("://resource/icons/DIn.png"));
         categoryItem->setEditable(false);
         categoryItem->setData("D" + QString::number(i));
-        categoryItem->setData(RuKou, ItemTypeRole);
+        categoryItem->setData(ChuRuKou, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(0, ItemFloorRole);
+        insertRow(currentCategory->row()+1, categoryItem);
+    }
+    for(int i=3; i>=1; i--)
+    {
+        categoryItem=new QStandardItem("F1 出入口 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/DIn.png"));
+        categoryItem->setEditable(false);
+        categoryItem->setData("D" + QString::number(i));
+        categoryItem->setData(ChuRuKou, ItemTypeRole);
+        categoryItem->setData(i, ItemIndexRole);
+        categoryItem->setData(1, ItemFloorRole);
+        insertRow(currentCategory->row()+1, categoryItem);
+    }
+    for(int i=3; i>=1; i--)
+    {
+        categoryItem=new QStandardItem("F2 出入口 "+QString::number(i));
+        categoryItem->setIcon(QIcon("://resource/icons/DIn.png"));
+        categoryItem->setEditable(false);
+        categoryItem->setData("D" + QString::number(i));
+        categoryItem->setData(ChuRuKou, ItemTypeRole);
         categoryItem->setData(i, ItemIndexRole);
         categoryItem->setData(2, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);
@@ -61,19 +82,6 @@ AMSuggestionModel::AMSuggestionModel(QObject *parent) :
         categoryItem->setEditable(false);
         categoryItem->setData("f1F1S" + QString::number(i));
         categoryItem->setData(ShangDian, ItemTypeRole);
-        categoryItem->setData(i, ItemIndexRole);
-        categoryItem->setData(1, ItemFloorRole);
-        insertRow(currentCategory->row()+1, categoryItem);
-    }
-
-    currentCategory=m_categoryItem[ChuKou];
-    for(int i=3; i>=1; i--)
-    {
-        categoryItem=new QStandardItem("出口 "+QString::number(i));
-        categoryItem->setIcon(QIcon("://resource/icons/DOn.png"));
-        categoryItem->setEditable(false);
-        categoryItem->setData("D" + QString::number(i));
-        categoryItem->setData(ChuKou, ItemTypeRole);
         categoryItem->setData(i, ItemIndexRole);
         categoryItem->setData(1, ItemFloorRole);
         insertRow(currentCategory->row()+1, categoryItem);

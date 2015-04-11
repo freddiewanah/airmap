@@ -37,6 +37,7 @@ public:
                 const QString &mapInfoFilePath);
 
 signals:
+    void requireSearchPath(int floor, int type, int id);
 
 public slots:
     void setCurrentIndex(int index);

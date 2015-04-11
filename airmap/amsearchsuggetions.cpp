@@ -74,7 +74,7 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
 bool AMSearchSuggetions::containsPlace(QString &text)
 {
     QString preferText;
-    if();
+//    if();
 }
 
 void AMSearchSuggetions::searchText(const QString &text)

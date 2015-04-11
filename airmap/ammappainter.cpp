@@ -13,8 +13,7 @@ AMMapPainter::AMMapPainter(QWidget *parent) :
     QWidget(parent)
 {
     //Initial the text to index.
-    m_typeTextToIndex.insert("RuKou", RuKou);
-    m_typeTextToIndex.insert("ChuKou", ChuKou);
+    m_typeTextToIndex.insert("ChuRuKou", ChuRuKou);
     m_typeTextToIndex.insert("DengJiKou", DengJiKou);
     m_typeTextToIndex.insert("DianTi", DianTi);
     m_typeTextToIndex.insert("FuTi", FuTi);
@@ -28,8 +27,7 @@ AMMapPainter::AMMapPainter(QWidget *parent) :
     //Initial the map item type name.
     m_mapItemTypeName[ShangDian]="商店";
     m_mapItemTypeName[WeiShengJian]="卫生间";
-    m_mapItemTypeName[RuKou]="入口";
-    m_mapItemTypeName[ChuKou]="出口";
+    m_mapItemTypeName[ChuRuKou]="出入口";
     m_mapItemTypeName[DengJiKou]="登机口";
     m_mapItemTypeName[DianTi]="电梯";
     m_mapItemTypeName[FuTi]="扶梯";
@@ -111,7 +109,7 @@ void AMMapPainter::mousePressEvent(QMouseEvent *event)
         {
             if((*i).geometry.contains(event->pos()))
             {
-                qDebug()<<m_mapItemTypeName[(*i).type]<<(*i).id;
+                emit requireSearchPath(m_index, (*i).type, (*i).id);
                 break;
             }
         }

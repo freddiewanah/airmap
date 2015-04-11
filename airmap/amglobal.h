@@ -7,8 +7,7 @@ namespace AMStd
 {
 enum MapItemType
 {
-    RuKou,
-    ChuKou,
+    ChuRuKou,
     DengJiKou,
     DianTi,
     FuTi,
