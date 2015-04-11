@@ -71,10 +71,17 @@ AMSearchSuggetions::AMSearchSuggetions(QWidget *parent) :
     expandAll();
 }
 
-bool AMSearchSuggetions::containsPlace(QString &text)
+QModelIndex AMSearchSuggetions::containsPlace(QString &text)
 {
-    QString preferText;
-//    if();
+    //Search the model is vaild or not.
+    QModelIndex searchResult=m_suggestionModel->findPlace(text);
+    if(searchResult.isValid())
+    {
+        //Change the text to the display role's text.
+        text=searchResult.data(Qt::DisplayRole).toString();
+        return m_proxyModel->mapFromSource(searchResult);
+    }
+    return QModelIndex();
 }
 
 void AMSearchSuggetions::searchText(const QString &text)

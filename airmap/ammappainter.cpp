@@ -49,7 +49,7 @@ void AMMapPainter::addMap(const QPixmap &pixmap, const QString &mapInfoFilePath)
     m_mapList.append(item);
     //Check if the current index is -1, means there's no available map image
     //here.
-    if(m_index==-1)
+    if(m_floorIndex==-1)
     {
         setCurrentIndex(0);
     }
@@ -60,9 +60,9 @@ void AMMapPainter::setCurrentIndex(int index)
     if(index>-1 && index<m_mapList.size())
     {
         //Save the index.
-        m_index=index;
+        m_floorIndex=index;
         //Set the current pixmap.
-        m_currentImage=m_mapList.at(m_index).image;
+        m_currentImage=m_mapList.at(m_floorIndex).image;
         //Resize the widget.
         resize(m_currentImage.size());
     }
@@ -85,9 +85,9 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
                        m_currentImage);
 
     //Debug
-    if(m_index!=-1)
+    if(m_floorIndex!=-1)
     {
-        QList<MapItem> itemList=m_mapList.at(m_index).items;
+        QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
         for(QList<MapItem>::iterator i=itemList.begin();
             i!=itemList.end();
             ++i)
@@ -100,16 +100,16 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
 void AMMapPainter::mousePressEvent(QMouseEvent *event)
 {
     //Check if current map is available.
-    if(m_index!=-1)
+    if(m_floorIndex!=-1)
     {
-        QList<MapItem> itemList=m_mapList.at(m_index).items;
+        QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
         for(QList<MapItem>::iterator i=itemList.begin();
             i!=itemList.end();
             ++i)
         {
             if((*i).geometry.contains(event->pos()))
             {
-                emit requireSearchPath(m_index, (*i).type, (*i).id);
+                emit requireSearchPath((*i).type, (*i).id, m_floorIndex);
                 break;
             }
         }

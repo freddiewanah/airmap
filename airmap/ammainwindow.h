@@ -1,6 +1,8 @@
 #ifndef AMMAINWINDOW_H
 #define AMMAINWINDOW_H
 
+#include <QModelIndex>
+
 #include <QMainWindow>
 
 class QScrollArea;
@@ -29,13 +31,16 @@ public slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
-    void startSearch();
+    void startSearch(const int &type, const int &index, const int &floor);
 
 private slots:
     void checkSearchText();
     void searchPathTo(const QJsonObject &details);
     void filterChanged(const QString &text);
-    void onActionSearch(const QModelIndex &current);
+    void onActionSuggetionRequireSearch(const QModelIndex &current);
+    void onActionMapRequireSearch(const int &floor,
+                                  const int &type,
+                                  const int &index);
     void onActionCancelSearch();
     void onActionSearchFocusIn();
     void onActionSearchFocusOut();

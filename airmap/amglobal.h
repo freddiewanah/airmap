@@ -24,7 +24,8 @@ enum SearchSuggetionRole
 {
     ItemTypeRole = Qt::UserRole,
     ItemIndexRole,
-    ItemFloorRole
+    ItemFloorRole,
+    ItemSearchSuggestionRole
 };
 }
 
