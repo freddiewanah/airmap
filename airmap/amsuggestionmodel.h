@@ -12,7 +12,7 @@ class AMSuggestionModel : public QStandardItemModel
     Q_OBJECT
 public:
     explicit AMSuggestionModel(QObject *parent = 0);
-    QString findPlace(const QString &keyword);
+    QModelIndex findPlace(const QString &keyword);
 
 signals:
 

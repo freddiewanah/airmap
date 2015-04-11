@@ -73,6 +73,12 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;
+    connect(m_mapPainter, &AMMapPainter::requireSearchPath,
+            this, &AMMainWindow::startSearch);
+    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_B1s.png"),
+                         "://resource/maps/square_0_2d_B1s.json");
+    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F1s.png"),
+                         "://resource/maps/square_0_2d_F1s.json");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
                          "://resource/maps/square_0_2d_F2s.json");
     m_mapView->setWidget(m_mapPainter);
@@ -131,7 +137,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     //When search suggestion has a selected item, the item will be the
     //item you want to search.
     connect(m_searchSuggestion, &AMSearchSuggetions::requireSearch,
-            this, &AMMainWindow::onActionSearch);
+            this, &AMMainWindow::onActionSuggetionRequireSearch);
     m_showSuggestion=new QPropertyAnimation(m_searchSuggestion,
                                             "geometry",
                                             this);
@@ -141,9 +147,6 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
                                             this);
     m_hideSuggestion->setEasingCurve(QEasingCurve::OutCubic);
     m_hideSuggestion->setEndValue(QRect(0,-10,width(),10));
-
-    //Set the map view.
-//    ;
 
     m_searchSuggestion->raise();
     m_searchBox->raise();
@@ -198,13 +201,18 @@ void AMMainWindow::resizeEvent(QResizeEvent *event)
     }
 }
 
-void AMMainWindow::startSearch()
+void AMMainWindow::startSearch(const int &type,
+                               const int &index,
+                               const int &floor)
 {
+    //----Debug----
+    qDebug()<<type<<index<<floor;
+
     //Hide the suggestions and buttons.
     hideSearchHelperWidgets();
     //Show the stop button.
     m_stopNavigate->showButton();
-    //Ask searcher to search.
+    //Check the location manager.
     if(m_locationManager==nullptr)
     {
         return;
@@ -218,14 +226,30 @@ void AMMainWindow::startSearch()
     searchObject.insert("FromY", y);
     searchObject.insert("FromZ", z);
     //Insert the destination data to search object.
-    searchObject.insert("Destination", "What the fuck?!");
+    searchObject.insert("DestinationType",  type);
+    searchObject.insert("DestinationIndex", index);
+    searchObject.insert("DestinationFloor", floor);
     //Start search the path.
     searchPathTo(searchObject);
 }
 
 void AMMainWindow::checkSearchText()
 {
-    if(m_searchSuggestion);
+    QString searchText=m_searchBoxText->text();
+    QModelIndex proxyIndex=m_searchSuggestion->containsPlace(searchText);
+    if(proxyIndex.isValid())
+    {
+        //Block the text signal.
+        m_searchBoxText->blockSignals(true);
+        //Set the text.
+        m_searchBoxText->setText(searchText);
+        //Unlock the block.
+        m_searchBoxText->blockSignals(false);
+        //Start search.
+        startSearch(proxyIndex.data(ItemTypeRole).toInt(),
+                    proxyIndex.data(ItemIndexRole).toInt(),
+                    proxyIndex.data(ItemFloorRole).toInt());
+    }
 }
 
 void AMMainWindow::searchPathTo(const QJsonObject &details)
@@ -242,16 +266,22 @@ void AMMainWindow::filterChanged(const QString &text)
     m_searchSuggestion->searchText(text);
 }
 
-void AMMainWindow::onActionSearch(const QModelIndex &current)
+void AMMainWindow::onActionSuggetionRequireSearch(const QModelIndex &current)
 {
     //Check if the current is a vaild item.
     if(current.isValid())
     {
         //Set the search text to the current item.
         m_searchBoxText->setText(current.data(Qt::DisplayRole).toString());
-        //Start to search the item.
-        startSearch();
+        //Check the search text.
+        checkSearchText();
     }
+}
+
+void AMMainWindow::onActionMapRequireSearch(const int &floor,
+                                            const int &type,
+                                            const int &index)
+{
     ;
 }
 

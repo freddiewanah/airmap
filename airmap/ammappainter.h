@@ -37,7 +37,7 @@ public:
                 const QString &mapInfoFilePath);
 
 signals:
-    void requireSearchPath(int floor, int type, int id);
+    void requireSearchPath(int type, int id, int floor);
 
 public slots:
     void setCurrentIndex(int index);
@@ -50,7 +50,7 @@ private:
     inline void loadMapInfo(Map &map, const QString &filePath);
     QList<Map> m_mapList;
     QPixmap m_currentImage;
-    int m_index=-1;
+    int m_floorIndex=-1;
     QString m_mapItemTypeName[MapItemTypeCount];
     QHash<QString, int> m_typeTextToIndex;
 };
