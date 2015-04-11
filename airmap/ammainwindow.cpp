@@ -2,10 +2,9 @@
 #include <QLineEdit>
 #include <QScrollBar>
 #include <QResizeEvent>
-#include <QGraphicsView>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsScene>
+#include <QScrollArea>
 #include <QPropertyAnimation>
+#include <QJsonObject>
 
 #include "ammappainter.h"
 #include "amlabelbutton.h"
@@ -22,8 +21,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     //Initial the graphics scene for the map painting.
-    m_mapScene=new QGraphicsScene(this);
-    m_mapView=new QGraphicsView(m_mapScene, this);
+    m_mapView=new QScrollArea(this);
     m_mapView->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
                                                   "   border: 0px solid grey;"
                                                   "   background: rgba(64,64,64,255);"
@@ -48,15 +46,36 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
                                                   "   subcontrol-position: up;"
                                                   "   subcontrol-origin: margin;"
                                                   "}");
+    m_mapView->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {"
+                                                    "   border: 0px solid grey;"
+                                                    "   background: rgba(64,64,64,255);"
+                                                    "   height: 8px;"
+                                                    "}"
+                                                    "QScrollBar::handle:horizontal {"
+                                                    "   background: rgba(100, 100, 100);"
+                                                    "   min-height: 10px;"
+                                                    "   border-radius: 4px;"
+                                                    "}"
+                                                    "QScrollBar::add-line:horizontal {"
+                                                    "   border: 0px solid grey;"
+                                                    "   background: rgba(0, 0, 0, 100);"
+                                                    "   width: 0px;"
+                                                    "   subcontrol-position: down;"
+                                                    "   subcontrol-origin: margin;"
+                                                    "}"
+                                                    "QScrollBar::sub-line:horizontal {"
+                                                    "   border: 0px solid grey;"
+                                                    "   background: rgba(0, 0, 0, 100);"
+                                                    "   width: 0px;"
+                                                    "   subcontrol-position: up;"
+                                                    "   subcontrol-origin: margin;"
+                                                    "}");
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
                          "://resource/maps/square_0_2d_F2s.json");
-    //Initial the map graphics proxy widget.
-    m_mapItem=new QGraphicsProxyWidget(0, Qt::Widget);
-    m_mapItem->setWidget(m_mapPainter);
-    m_mapScene->addItem(m_mapItem);
+    m_mapView->setWidget(m_mapPainter);
 
     //Initial the search bar.
     m_searchBox=new QWidget(this);
@@ -82,7 +101,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     connect(m_searchBoxText, &AMLineEdit::textChanged,
             this, &AMMainWindow::filterChanged);
     connect(m_searchBoxText, &AMLineEdit::returnPressed,
-            this, &AMMainWindow::startSearch);
+            this, &AMMainWindow::checkSearchText);
     m_searchBoxText->setFrame(false);
     pal=m_searchBoxText->palette();
     pal.setColor(QPalette::Text, QColor(0,0,0));
@@ -186,9 +205,33 @@ void AMMainWindow::startSearch()
     //Show the stop button.
     m_stopNavigate->showButton();
     //Ask searcher to search.
-    qDebug()<<m_searchBoxText->text();
+    if(m_locationManager==nullptr)
+    {
+        return;
+    }
+    //Generate the json object.
+    qreal x,y,z;
+    m_locationManager->getCurrentPos(x,y,z);
+    //Insert the data to the search object.
+    QJsonObject searchObject;
+    searchObject.insert("FromX", x);
+    searchObject.insert("FromY", y);
+    searchObject.insert("FromZ", z);
+    //Insert the destination data to search object.
+    searchObject.insert("Destination", "What the fuck?!");
+    //Start search the path.
+    searchPathTo(searchObject);
+}
+
+void AMMainWindow::checkSearchText()
+{
+    if(m_searchSuggestion);
+}
+
+void AMMainWindow::searchPathTo(const QJsonObject &details)
+{
     //Ensure the loacation manager and searcher exist.
-    if(m_locationManager==nullptr || m_searcher==nullptr)
+    if(m_searcher==nullptr)
     {
         return;
     }

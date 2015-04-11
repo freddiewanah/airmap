@@ -7,24 +7,10 @@
 #include <QRectF>
 #include <QHash>
 
+#include "amglobal.h"
+
 namespace MapPainter
 {
-enum MapItemType
-{
-    ChuRuKou,
-    //ChuKou,
-    DengJiKou,
-    DianTi,
-    FuTi,
-    ZhiJiGuiTai,
-    AnJianKou,
-    YinShuiChu,
-    WeiShengJian,
-    XunWenChu,
-    ShangDian,
-    XingLiPan,
-    MapItemTypeCount
-};
 struct MapItem
 {
     QRectF geometry;
@@ -40,6 +26,7 @@ struct Map
 }
 
 using namespace MapPainter;
+using namespace AMStd;
 
 class AMMapPainter : public QWidget
 {
@@ -50,6 +37,7 @@ public:
                 const QString &mapInfoFilePath);
 
 signals:
+    void requireSearchPath(int floor, int type, int id);
 
 public slots:
     void setCurrentIndex(int index);

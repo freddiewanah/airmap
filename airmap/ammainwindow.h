@@ -3,9 +3,7 @@
 
 #include <QMainWindow>
 
-class QGraphicsProxyWidget;
-class QGraphicsView;
-class QGraphicsScene;
+class QScrollArea;
 class QPropertyAnimation;
 class AMLineEdit;
 class AMMapPainter;
@@ -34,6 +32,8 @@ protected:
     void startSearch();
 
 private slots:
+    void checkSearchText();
+    void searchPathTo(const QJsonObject &details);
     void filterChanged(const QString &text);
     void onActionSearch(const QModelIndex &current);
     void onActionCancelSearch();
@@ -50,9 +50,7 @@ private:
 
     QPropertyAnimation *m_showSuggestion, *m_hideSuggestion;
 
-    QGraphicsView *m_mapView;
-    QGraphicsScene *m_mapScene;
-    QGraphicsProxyWidget *m_mapItem;
+    QScrollArea *m_mapView;
     AMMapPainter *m_mapPainter;
     QWidget *m_searchBox;
 

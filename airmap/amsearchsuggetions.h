@@ -13,6 +13,7 @@ class AMSearchSuggetions : public QTreeView
     Q_OBJECT
 public:
     explicit AMSearchSuggetions(QWidget *parent = 0);
+    bool containsPlace(QString &text);
 
 signals:
     void requireSearch(QModelIndex index);
