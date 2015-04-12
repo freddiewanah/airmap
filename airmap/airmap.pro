@@ -12,7 +12,8 @@ SOURCES += \
     amsuggestionmodel.cpp \
     amsuggestiondelegate.cpp \
     amsuggestionfiltermodel.cpp \
-    amglobal.cpp
+    amglobal.cpp \
+    amhotpoint.cpp
 
 HEADERS += \
     ammainwindow.h \
@@ -25,7 +26,8 @@ HEADERS += \
     amsuggestionmodel.h \
     amsuggestiondelegate.h \
     amsuggestionfiltermodel.h \
-    amglobal.h
+    amglobal.h \
+    amhotpoint.h
 
 RESOURCES += \
     res.qrc

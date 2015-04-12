@@ -7,6 +7,7 @@
 
 class QScrollArea;
 class QPropertyAnimation;
+class AMHotPoint;
 class AMLineEdit;
 class AMMapPainter;
 class AMLabelButton;
@@ -58,6 +59,7 @@ private:
     QScrollArea *m_mapView;
     AMMapPainter *m_mapPainter;
     QWidget *m_searchBox;
+    AMHotPoint *m_hotPoint;
 
     //Some consts.
     const int m_searchBoxHeight=50;

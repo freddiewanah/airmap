@@ -6,6 +6,7 @@
 #include <QPropertyAnimation>
 #include <QJsonObject>
 
+#include "amhotpoint.h"
 #include "ammappainter.h"
 #include "amlabelbutton.h"
 #include "amlineedit.h"
@@ -154,6 +155,9 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
 
     m_searchSuggestion->raise();
     m_searchBox->raise();
+
+    m_hotPoint=new AMHotPoint(this);
+    m_hotPoint->resize(50, 50);
 }
 
 AMMainWindow::~AMMainWindow()
