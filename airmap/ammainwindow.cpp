@@ -83,7 +83,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
                          "://resource/maps/square_0_2d_F2s.json");
 
     //Debug
-    m_mapPainter->setCurrentIndex(0);
+    m_mapPainter->setCurrentIndex(1);
 
     m_mapView->setWidget(m_mapPainter);
 
