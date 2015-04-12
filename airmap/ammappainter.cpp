@@ -65,11 +65,15 @@ void AMMapPainter::setCurrentIndex(int index)
         m_currentImage=m_mapList.at(m_floorIndex).image;
         //Resize the widget.
         resize(m_currentImage.size());
+        //Update the painter to update the image.
+        update();
     }
 }
 
 void AMMapPainter::paintEvent(QPaintEvent *event)
 {
+    //Ignore the event.
+    Q_UNUSED(event)
     //Check is the current image null.
     if(m_currentImage.isNull())
     {

@@ -75,12 +75,16 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapPainter=new AMMapPainter;
     connect(m_mapPainter, &AMMapPainter::requireSearchPath,
             this, &AMMainWindow::startSearch);
-    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_B1s.png"),
-                         "://resource/maps/square_0_2d_B1s.json");
+//    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_B1s.png"),
+//                         "://resource/maps/square_0_2d_B1s.json");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F1s.png"),
                          "://resource/maps/square_0_2d_F1s.json");
-    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
-                         "://resource/maps/square_0_2d_F2s.json");
+//    m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
+//                         "://resource/maps/square_0_2d_F2s.json");
+
+    //Debug
+    m_mapPainter->setCurrentIndex(1);
+
     m_mapView->setWidget(m_mapPainter);
 
     //Initial the search bar.
