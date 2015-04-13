@@ -153,6 +153,12 @@ void AMMainWindow::resizeEvent(QResizeEvent *event)
                            m_searchBox->height(),
                            width(),
                            height()-m_searchBox->height());
+    //Check the hot point position.
+    if(m_hotPoint->x()!=0)
+    {
+        m_hotPoint->move(width()-m_hotPoint->width(),
+                         m_hotPoint->y());
+    }
     //Check search widget position.
     if(m_searchSuggestion->y()>0)
     {
