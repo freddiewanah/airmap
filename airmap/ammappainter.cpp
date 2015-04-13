@@ -70,6 +70,25 @@ void AMMapPainter::setCurrentIndex(int index)
     }
 }
 
+void AMMapPainter::onActionPressed(QPoint position)
+{
+    //Check if current map is available.
+    if(m_floorIndex!=-1)
+    {
+        QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
+        for(QList<MapItem>::iterator i=itemList.begin();
+            i!=itemList.end();
+            ++i)
+        {
+            if((*i).geometry.contains(position))
+            {
+                emit requireSearchPath((*i).type, (*i).id, m_floorIndex);
+                break;
+            }
+        }
+    }
+}
+
 void AMMapPainter::paintEvent(QPaintEvent *event)
 {
     //Ignore the event.
@@ -99,27 +118,6 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
             painter.drawRect((*i).geometry);
         }
     }
-}
-
-void AMMapPainter::mousePressEvent(QMouseEvent *event)
-{
-    //Check if current map is available.
-    if(m_floorIndex!=-1)
-    {
-        QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
-        for(QList<MapItem>::iterator i=itemList.begin();
-            i!=itemList.end();
-            ++i)
-        {
-            if((*i).geometry.contains(event->pos()))
-            {
-                emit requireSearchPath((*i).type, (*i).id, m_floorIndex);
-                break;
-            }
-        }
-    }
-    //Do original event.
-    QWidget::mouseReleaseEvent(event);
 }
 
 void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
