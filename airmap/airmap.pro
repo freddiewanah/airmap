@@ -14,7 +14,8 @@ SOURCES += \
     amsuggestionfiltermodel.cpp \
     amglobal.cpp \
     amhotpoint.cpp \
-    amtouchsrollarea.cpp
+    amtouchsrollarea.cpp \
+    amtextbutton.cpp
 
 HEADERS += \
     ammainwindow.h \
@@ -29,7 +30,8 @@ HEADERS += \
     amsuggestionfiltermodel.h \
     amglobal.h \
     amhotpoint.h \
-    amtouchsrollarea.h
+    amtouchsrollarea.h \
+    amtextbutton.h
 
 RESOURCES += \
     res.qrc
