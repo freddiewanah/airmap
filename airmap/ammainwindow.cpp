@@ -2,10 +2,10 @@
 #include <QLineEdit>
 #include <QScrollBar>
 #include <QResizeEvent>
-#include <QScrollArea>
 #include <QPropertyAnimation>
 #include <QJsonObject>
 
+#include "amtouchsrollarea.h"
 #include "amhotpoint.h"
 #include "ammappainter.h"
 #include "amlabelbutton.h"
@@ -21,56 +21,9 @@
 AMMainWindow::AMMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    setMinimumSize(320, 480);
     //Initial the graphics scene for the map painting.
-    m_mapView=new QScrollArea(this);
-    m_mapView->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
-                                                  "   border: 0px solid grey;"
-                                                  "   background: rgba(64,64,64,255);"
-                                                  "   width: 8px;"
-                                                  "}"
-                                                  "QScrollBar::handle:vertical {"
-                                                  "   background: rgba(100, 100, 100);"
-                                                  "   min-height: 10px;"
-                                                  "   border-radius: 4px;"
-                                                  "}"
-                                                  "QScrollBar::add-line:vertical {"
-                                                  "   border: 0px solid grey;"
-                                                  "   background: rgba(0, 0, 0, 100);"
-                                                  "   height: 0px;"
-                                                  "   subcontrol-position: down;"
-                                                  "   subcontrol-origin: margin;"
-                                                  "}"
-                                                  "QScrollBar::sub-line:vertical {"
-                                                  "   border: 0px solid grey;"
-                                                  "   background: rgba(0, 0, 0, 100);"
-                                                  "   height: 0px;"
-                                                  "   subcontrol-position: up;"
-                                                  "   subcontrol-origin: margin;"
-                                                  "}");
-    m_mapView->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {"
-                                                    "   border: 0px solid grey;"
-                                                    "   background: rgba(64,64,64,255);"
-                                                    "   height: 8px;"
-                                                    "}"
-                                                    "QScrollBar::handle:horizontal {"
-                                                    "   background: rgba(100, 100, 100);"
-                                                    "   min-height: 10px;"
-                                                    "   border-radius: 4px;"
-                                                    "}"
-                                                    "QScrollBar::add-line:horizontal {"
-                                                    "   border: 0px solid grey;"
-                                                    "   background: rgba(0, 0, 0, 100);"
-                                                    "   width: 0px;"
-                                                    "   subcontrol-position: down;"
-                                                    "   subcontrol-origin: margin;"
-                                                    "}"
-                                                    "QScrollBar::sub-line:horizontal {"
-                                                    "   border: 0px solid grey;"
-                                                    "   background: rgba(0, 0, 0, 100);"
-                                                    "   width: 0px;"
-                                                    "   subcontrol-position: up;"
-                                                    "   subcontrol-origin: margin;"
-                                                    "}");
+    m_mapView=new AMTouchSrollArea(this);
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;
@@ -87,6 +40,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapPainter->setCurrentIndex(1);
 
     m_mapView->setWidget(m_mapPainter);
+    connect(m_mapView, &AMTouchSrollArea::touch,
+            m_mapPainter, &AMMapPainter::onActionPressed);
 
     //Initial the search bar.
     m_searchBox=new QWidget(this);

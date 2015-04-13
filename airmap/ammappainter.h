@@ -41,10 +41,10 @@ signals:
 
 public slots:
     void setCurrentIndex(int index);
+    void onActionPressed(QPoint position);
 
 protected:
     void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
 
 private:
     inline void loadMapInfo(Map &map, const QString &filePath);

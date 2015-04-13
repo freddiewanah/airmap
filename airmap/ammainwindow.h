@@ -5,8 +5,8 @@
 
 #include <QMainWindow>
 
-class QScrollArea;
 class QPropertyAnimation;
+class AMTouchSrollArea;
 class AMHotPoint;
 class AMLineEdit;
 class AMMapPainter;
@@ -56,7 +56,7 @@ private:
 
     QPropertyAnimation *m_showSuggestion, *m_hideSuggestion;
 
-    QScrollArea *m_mapView;
+    AMTouchSrollArea *m_mapView;
     AMMapPainter *m_mapPainter;
     QWidget *m_searchBox;
     AMHotPoint *m_hotPoint;
