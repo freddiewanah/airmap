@@ -6,6 +6,7 @@
 #include <QJsonObject>
 
 #include "amtouchsrollarea.h"
+#include "amlocationmanager.h"
 #include "amhotpoint.h"
 #include "ammappainter.h"
 #include "amlabelbutton.h"
@@ -22,6 +23,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     setMinimumSize(320, 480);
+    //Configure the location manager.
+    setLocationManager(new AMLocationManager);
     //Initial the graphics scene for the map painting.
     m_mapView=new AMTouchSrollArea(this);
     m_mapView->setFrameShape(QFrame::NoFrame);

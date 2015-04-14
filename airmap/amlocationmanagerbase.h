@@ -8,7 +8,8 @@ class AMLocationManagerBase : public QObject
     Q_OBJECT
 public:
     AMLocationManagerBase(QObject *parent = 0):QObject(parent){}
-    virtual void getCurrentPos(double &a, double &b, double &c)=0;
+    virtual bool getCurrentPos(double &a, double &b, double &c)=0;
+    virtual void setUrl(const QString &url)=0;
 
 signals:
     void pointGet(double a, double b, double c);

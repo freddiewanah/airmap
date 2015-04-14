@@ -1,4 +1,4 @@
-QT += core gui widgets
+QT += core gui widgets network
 
 CONFIG += c++11
 
@@ -15,7 +15,8 @@ SOURCES += \
     amglobal.cpp \
     amhotpoint.cpp \
     amtouchsrollarea.cpp \
-    amtextbutton.cpp
+    amtextbutton.cpp \
+    amlocationmanager.cpp
 
 HEADERS += \
     ammainwindow.h \
@@ -31,7 +32,8 @@ HEADERS += \
     amglobal.h \
     amhotpoint.h \
     amtouchsrollarea.h \
-    amtextbutton.h
+    amtextbutton.h \
+    amlocationmanager.h
 
 RESOURCES += \
     res.qrc
