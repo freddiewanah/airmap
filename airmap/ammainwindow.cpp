@@ -114,6 +114,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_hotPoint=new AMHotPoint(this);
     connect(m_hotPoint, SIGNAL(requireChangeMap(int)),
             m_mapPainter, SLOT(setCurrentIndex(int)));
+    connect(m_hotPoint, SIGNAL(requireChangeZoom(qreal)),
+            m_mapPainter, SLOT(setZoom(qreal)));
     m_hotPoint->move(0, m_searchBoxHeight);
     m_hotPoint->resize(50, 50);
 }

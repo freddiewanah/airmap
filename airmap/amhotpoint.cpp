@@ -51,6 +51,12 @@ AMHotPoint::AMHotPoint(QWidget *parent) :
     m_floor[1]->setText("F1");
     m_floor[2]->setText("F2");
     m_slider=new QDial(this);
+    m_slider->setRange(50,100);
+    connect(m_slider, &QDial::valueChanged,
+            [=](const int &zoom)
+            {
+                emit requireChangeZoom(((qreal)zoom)/100.0);
+            });
     mainLayout->addWidget(m_slider);
 
     m_stickAnime=new QTimeLine(200, this);

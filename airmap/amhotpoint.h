@@ -15,6 +15,7 @@ public:
     explicit AMHotPoint(QWidget *parent = 0);
 
 signals:
+    void requireChangeZoom(qreal zoom);
     void requireChangeMap(int mapIndex);
     void requireCheckPosition();
 
