@@ -11,6 +11,7 @@ public:
 
 signals:
     void touch(QPoint point);
+    void pressed();
 
 public slots:
 
