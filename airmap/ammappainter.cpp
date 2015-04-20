@@ -112,8 +112,7 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     //Set rendering hints.
     painter.setRenderHints(QPainter::Antialiasing |
-                           QPainter::TextAntialiasing |
-                           QPainter::SmoothPixmapTransform, true);
+                           QPainter::TextAntialiasing, true);
     //Paint the pixmap.
     painter.drawPixmap(0,0,m_currentImage.width(),m_currentImage.height(),
                        m_currentImage);
@@ -181,7 +180,7 @@ inline void AMMapPainter::updateImage()
     m_currentImage=m_mapList.at(m_floorIndex).image;
     m_currentImage=m_currentImage.scaled(m_currentImage.size()*m_zoom,
                                          Qt::KeepAspectRatio,
-                                         Qt::SmoothTransformation);
+                                         Qt::FastTransformation);
     //Resize the widget.
     resize(m_currentImage.size());
     //Update the painter to update the image.
