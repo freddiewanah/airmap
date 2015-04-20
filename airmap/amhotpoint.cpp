@@ -40,6 +40,7 @@ AMHotPoint::AMHotPoint(QWidget *parent) :
         m_floor[i]->setMinimumHeight(50);
         m_floor[i]->setAlignment(Qt::AlignCenter);
         connect(m_floor[i], SIGNAL(clicked()), changeMap, SLOT(map()));
+        connect(m_floor[i], SIGNAL(clicked()), this, SLOT(foldHotPoint()));
         changeMap->setMapping(m_floor[i], i);
         QPalette pal=m_floor[i]->palette();
         pal.setColor(QPalette::WindowText, QColor(255,255,255));
@@ -50,6 +51,13 @@ AMHotPoint::AMHotPoint(QWidget *parent) :
     m_floor[1]->setText("F1");
     m_floor[2]->setText("F2");
     m_slider=new QDial(this);
+    m_slider->setRange(25,100);
+    m_slider->setValue(100);
+    connect(m_slider, &QDial::valueChanged,
+            [=](const int &zoom)
+            {
+                emit requireChangeZoom(((qreal)zoom)/100.0);
+            });
     mainLayout->addWidget(m_slider);
 
     m_stickAnime=new QTimeLine(200, this);
@@ -69,13 +77,23 @@ AMHotPoint::AMHotPoint(QWidget *parent) :
     connect(m_expandAnime, SIGNAL(finished()),
             this, SLOT(onActionShowItems()));
 
+    m_foldAnime=new QPropertyAnimation(this, "geometry", this);
+    m_foldAnime->setDuration(200);
+    m_foldAnime->setEasingCurve(QEasingCurve::OutCubic);
+    connect(m_foldAnime, SIGNAL(valueChanged(QVariant)),
+            this, SLOT(onActionFold(QVariant)));
+    connect(m_foldAnime, &QPropertyAnimation::finished,
+            [=]
+            {
+                m_indicator->show();
+                m_expandGeometry=QRect();
+            });
+
     onActionHideItems();
 }
 
 void AMHotPoint::onActionShowItems()
 {
-    //Hide the indicator.
-    m_indicator->hide();
     //Show the items.
     m_floor[0]->show();
     m_floor[1]->show();
@@ -85,13 +103,37 @@ void AMHotPoint::onActionShowItems()
 
 void AMHotPoint::onActionHideItems()
 {
-    //Show the indicator.
-    m_indicator->show();
     //Hide the items.
     m_floor[0]->hide();
     m_floor[1]->hide();
     m_floor[2]->hide();
     m_slider->hide();
+}
+
+void AMHotPoint::foldHotPoint()
+{
+    if(m_expandGeometry.isNull())
+    {
+        return;
+    }
+    //Configure the hot point.
+    m_foldAnime->setStartValue(geometry());
+    QRect preferGeometry=QRect((m_expandGeometry.x()==0)?0:(parentWidget()->width()-50),
+                               m_expandGeometry.y(),
+                               50,
+                               50);
+    if(preferGeometry.bottom()>parentWidget()->height())
+    {
+        preferGeometry.moveTop(parentWidget()->height()-preferGeometry.height());
+    }
+    if(preferGeometry.right()>parentWidget()->width())
+    {
+        preferGeometry.moveLeft(parentWidget()->width()-preferGeometry.width());
+    }
+    m_foldAnime->setEndValue(preferGeometry);
+    m_foldAnime->start();
+    //Hide the widget first.
+    onActionHideItems();
 }
 
 void AMHotPoint::leaveEvent(QEvent *event)
@@ -172,18 +214,38 @@ void AMHotPoint::onActionExpand(const QVariant &value)
     setPalette(pal);
 }
 
+void AMHotPoint::onActionFold(const QVariant &value)
+{
+    Q_UNUSED(value)
+    //Ignore the value.
+    QPalette pal=palette();
+    pal.setColor(QPalette::Window, QColor(0,0,0,200-m_foldAnime->currentTime()));
+    setPalette(pal);
+}
+
 void AMHotPoint::onActionClicked()
 {
     if(m_indicator->isVisible())
     {
         //Hide the indicator.
         m_indicator->hide();
+        //Save the expand animation.
+        m_expandGeometry=geometry();
         //Expand the animation, check the position first.
         m_expandAnime->setStartValue(geometry());
-        m_expandAnime->setEndValue(QRect(geometry().x(),
-                                         geometry().y(),
-                                         80,
-                                         m_floor[0]->height()*3+80));
+        QRect preferGeometry=QRect(geometry().x(),
+                                   geometry().y(),
+                                   80,
+                                   m_floor[0]->height()*3+80);
+        if(preferGeometry.bottom()>parentWidget()->height())
+        {
+            preferGeometry.moveTop(parentWidget()->height()-preferGeometry.height());
+        }
+        if(preferGeometry.right()>parentWidget()->width())
+        {
+            preferGeometry.moveLeft(parentWidget()->width()-preferGeometry.width());
+        }
+        m_expandAnime->setEndValue(preferGeometry);
         m_expandAnime->start();
     }
 }

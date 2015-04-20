@@ -16,7 +16,8 @@ SOURCES += \
     amhotpoint.cpp \
     amtouchsrollarea.cpp \
     amtextbutton.cpp \
-    amlocationmanager.cpp
+    amlocationmanager.cpp \
+    ammapitemdetail.cpp
 
 HEADERS += \
     ammainwindow.h \
@@ -33,7 +34,8 @@ HEADERS += \
     amhotpoint.h \
     amtouchsrollarea.h \
     amtextbutton.h \
-    amlocationmanager.h
+    amlocationmanager.h \
+    ammapitemdetail.h
 
 RESOURCES += \
     res.qrc

@@ -35,11 +35,13 @@ public:
     explicit AMMapPainter(QWidget *parent = 0);
     void addMap(const QPixmap &pixmap,
                 const QString &mapInfoFilePath);
+    qreal zoom() const;
 
 signals:
     void requireSearchPath(int type, int id, int floor);
 
 public slots:
+    void setZoom(const qreal &zoom);
     void setCurrentIndex(int index);
     void onActionPressed(QPoint position);
 
@@ -48,11 +50,14 @@ protected:
 
 private:
     inline void loadMapInfo(Map &map, const QString &filePath);
+    inline void updateImage();
     QList<Map> m_mapList;
     QPixmap m_currentImage;
     int m_floorIndex=-1;
     QString m_mapItemTypeName[MapItemTypeCount];
     QHash<QString, int> m_typeTextToIndex;
+
+    qreal m_zoom=1.0;
 };
 
 #endif // AMMAPPAINTER_H

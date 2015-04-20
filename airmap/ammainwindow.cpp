@@ -114,6 +114,10 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_hotPoint=new AMHotPoint(this);
     connect(m_hotPoint, SIGNAL(requireChangeMap(int)),
             m_mapPainter, SLOT(setCurrentIndex(int)));
+    connect(m_hotPoint, SIGNAL(requireChangeZoom(qreal)),
+            m_mapPainter, SLOT(setZoom(qreal)));
+    connect(m_mapView, SIGNAL(pressed()),
+            m_hotPoint, SLOT(foldHotPoint()));
     m_hotPoint->move(0, m_searchBoxHeight);
     m_hotPoint->resize(50, 50);
 }
@@ -153,6 +157,12 @@ void AMMainWindow::resizeEvent(QResizeEvent *event)
                            m_searchBox->height(),
                            width(),
                            height()-m_searchBox->height());
+    //Check the hot point position.
+    if(m_hotPoint->x()!=0)
+    {
+        m_hotPoint->move(width()-m_hotPoint->width(),
+                         m_hotPoint->y());
+    }
     //Check search widget position.
     if(m_searchSuggestion->y()>0)
     {

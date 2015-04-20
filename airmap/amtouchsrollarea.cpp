@@ -62,6 +62,8 @@ void AMTouchSrollArea::mousePressEvent(QMouseEvent *event)
 {
     m_pressed=true;
     m_moved=false;
+    //
+    emit pressed();
     //Save the position.
     m_pressedPoint=event->pos();
     m_hValue=horizontalScrollBar()->value();

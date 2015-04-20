@@ -61,12 +61,7 @@ void AMMapPainter::setCurrentIndex(int index)
     {
         //Save the index.
         m_floorIndex=index;
-        //Set the current pixmap.
-        m_currentImage=m_mapList.at(m_floorIndex).image;
-        //Resize the widget.
-        resize(m_currentImage.size());
-        //Update the painter to update the image.
-        update();
+        updateImage();
     }
 }
 
@@ -80,7 +75,8 @@ void AMMapPainter::onActionPressed(QPoint position)
             i!=itemList.end();
             ++i)
         {
-            if((*i).geometry.contains(position))
+            if(QRectF((*i).geometry.topLeft()*m_zoom,
+                      (*i).geometry.size()*m_zoom).contains(position))
             {
                 emit requireSearchPath((*i).type, (*i).id, m_floorIndex);
                 break;
@@ -106,18 +102,6 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
     //Paint the pixmap.
     painter.drawPixmap(0,0,m_currentImage.width(),m_currentImage.height(),
                        m_currentImage);
-
-    //Debug
-    if(m_floorIndex!=-1)
-    {
-        QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
-        for(QList<MapItem>::iterator i=itemList.begin();
-            i!=itemList.end();
-            ++i)
-        {
-            painter.drawRect((*i).geometry);
-        }
-    }
 }
 
 void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
@@ -155,3 +139,28 @@ void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
         }
     }
 }
+
+inline void AMMapPainter::updateImage()
+{
+    //Scale the current image.
+    m_currentImage=m_mapList.at(m_floorIndex).image;
+    m_currentImage=m_currentImage.scaled(m_currentImage.size()*m_zoom,
+                                         Qt::KeepAspectRatio,
+                                         Qt::SmoothTransformation);
+    //Resize the widget.
+    resize(m_currentImage.size());
+    //Update the painter to update the image.
+    update();
+}
+
+qreal AMMapPainter::zoom() const
+{
+    return m_zoom;
+}
+
+void AMMapPainter::setZoom(const qreal &zoom)
+{
+    m_zoom = zoom;
+    updateImage();
+}
+

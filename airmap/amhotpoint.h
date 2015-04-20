@@ -15,12 +15,14 @@ public:
     explicit AMHotPoint(QWidget *parent = 0);
 
 signals:
+    void requireChangeZoom(qreal zoom);
     void requireChangeMap(int mapIndex);
     void requireCheckPosition();
 
 public slots:
     void onActionShowItems();
     void onActionHideItems();
+    void foldHotPoint();
 
 protected:
     void leaveEvent(QEvent *event);
@@ -30,6 +32,7 @@ protected:
 
 private slots:
     void onActionExpand(const QVariant &value);
+    void onActionFold(const QVariant &value);
     void onActionClicked();
 
 private:
@@ -41,6 +44,7 @@ private:
     AMTextButton *m_floor[3];
     QTimeLine *m_stickAnime;
     QPropertyAnimation *m_expandAnime, *m_foldAnime;
+    QRect m_expandGeometry=QRect();
 };
 
 #endif // AMHOTPOINT_H
