@@ -9,6 +9,10 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+  extern Q_WIDGETS_EXPORT void qt_blurImage( QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0 );
+QT_END_NAMESPACE
+
 AMMapPainter::AMMapPainter(QWidget *parent) :
     QWidget(parent)
 {
@@ -36,6 +40,18 @@ AMMapPainter::AMMapPainter(QWidget *parent) :
     m_mapItemTypeName[YinShuiChu]="饮水处";
     m_mapItemTypeName[XunWenChu]="询问处";
     m_mapItemTypeName[XingLiPan]="行李盘";
+    //Initial the map item icon.
+    m_iconList.append(QIcon("://resource/icons/DIn.png"));
+    m_iconList.append(QIcon("://resource/icons/EAn.png"));
+    m_iconList.append(QIcon("://resource/icons/ELn.png"));
+    m_iconList.append(QIcon("://resource/icons/ESn.png"));
+    m_iconList.append(QIcon("://resource/icons/Cn.png"));
+    m_iconList.append(QIcon("://resource/icons/SCn.png"));
+    m_iconList.append(QIcon("://resource/icons/WTn.png"));
+    m_iconList.append(QIcon("://resource/icons/Wn.png"));
+    m_iconList.append(QIcon("://resource/icons/Qn.png"));
+    m_iconList.append(QIcon("://resource/icons/Sn.png"));
+    m_iconList.append(QIcon("://resource/icons/Bn.png"));
 }
 
 void AMMapPainter::addMap(const QPixmap &pixmap, const QString &mapInfoFilePath)
@@ -75,8 +91,7 @@ void AMMapPainter::onActionPressed(QPoint position)
             i!=itemList.end();
             ++i)
         {
-            if(QRectF((*i).geometry.topLeft()*m_zoom,
-                      (*i).geometry.size()*m_zoom).contains(position))
+            if((*i).zoomGeometry.contains(position))
             {
                 emit requireSearchPath((*i).type, (*i).id, m_floorIndex);
                 break;
@@ -102,6 +117,24 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
     //Paint the pixmap.
     painter.drawPixmap(0,0,m_currentImage.width(),m_currentImage.height(),
                        m_currentImage);
+
+    if(m_floorIndex!=-1)
+    {
+        QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
+        for(QList<MapItem>::iterator i=itemList.begin();
+            i!=itemList.end();
+            ++i)
+        {
+            QSize scaledSize=(*i).zoomGeometry.size().toSize();
+            int iconSize=((qreal)qMin(scaledSize.width(), scaledSize.height()))*0.8;
+            QRect currentRect=(*i).zoomGeometry.toRect();
+            painter.drawPixmap(QRect(currentRect.x()+((currentRect.width()-iconSize)>>1),
+                                     currentRect.y()+((currentRect.height()-iconSize)>>1),
+                                     iconSize,
+                                     iconSize),
+                               m_iconList.at((*i).type).pixmap(iconSize, iconSize));
+        }
+    }
 }
 
 void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
@@ -132,6 +165,8 @@ void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
                                     mapItemArray.at(1).toDouble()+yOffset,
                                     mapItemArray.at(2).toDouble(),
                                     mapItemArray.at(3).toDouble());
+            mapItem.zoomGeometry=QRectF(mapItem.geometry.topLeft()*m_zoom,
+                                        mapItem.geometry.size()*m_zoom);
             mapItem.type=m_typeTextToIndex.value(mapItemArray.at(4).toString());
             mapItem.id=mapItemArray.at(5).toInt();
             //Insert the item to map.
@@ -161,6 +196,22 @@ qreal AMMapPainter::zoom() const
 void AMMapPainter::setZoom(const qreal &zoom)
 {
     m_zoom = zoom;
+    //Update all the zoom geometry.
+    for(int i=0; i<m_mapList.size(); i++)
+    {
+        Map map=m_mapList.at(i);
+        QList<MapItem> itemList=m_mapList.at(i).items,
+                       zoomItemList;
+        for(int j=0; j<itemList.size(); j++)
+        {
+            MapItem zoomItem=itemList.at(j);
+            zoomItem.zoomGeometry=QRectF(zoomItem.geometry.topLeft()*m_zoom,
+                                         zoomItem.geometry.size()*m_zoom);
+            zoomItemList.append(zoomItem);
+        }
+        map.items=zoomItemList;
+        m_mapList.replace(i, map);
+    }
     updateImage();
 }
 

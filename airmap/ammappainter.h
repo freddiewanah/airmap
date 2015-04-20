@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QRectF>
 #include <QHash>
+#include <QIcon>
 
 #include "amglobal.h"
 
@@ -14,6 +15,7 @@ namespace MapPainter
 struct MapItem
 {
     QRectF geometry;
+    QRectF zoomGeometry;
     int type;
     int id;
 };
@@ -52,6 +54,7 @@ private:
     inline void loadMapInfo(Map &map, const QString &filePath);
     inline void updateImage();
     QList<Map> m_mapList;
+    QList<QIcon> m_iconList;
     QPixmap m_currentImage;
     int m_floorIndex=-1;
     QString m_mapItemTypeName[MapItemTypeCount];
