@@ -20,6 +20,11 @@ AMLocationManager::AMLocationManager(QObject *parent) :
 
 bool AMLocationManager::getCurrentPos(double &a, double &b, double &c)
 {
+    //----Debug-----
+    a=0.5;
+    b=0.5;
+    c=1;
+    return true;
     //Get information.
     QByteArray rawData=getPositionInfo();
     if(rawData.isEmpty())

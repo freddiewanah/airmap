@@ -1,10 +1,27 @@
 #ifndef AMGLOBAL_H
 #define AMGLOBAL_H
 
+#include <QList>
+#include <QRectF>
+#include <QPixmap>
+
 #include <QObject>
 
 namespace AMStd
 {
+struct MapItem
+{
+    QRectF geometry;
+    QRectF zoomGeometry;
+    int type;
+    int id;
+};
+struct Map
+{
+    QPixmap image;
+    QString mapName;
+    QList<MapItem> items;
+};
 enum MapItemType
 {
     ChuRuKou,

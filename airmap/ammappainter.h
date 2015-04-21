@@ -1,7 +1,6 @@
 #ifndef AMMAPPAINTER_H
 #define AMMAPPAINTER_H
 
-#include <QList>
 #include <QPixmap>
 #include <QWidget>
 #include <QRectF>
@@ -10,26 +9,9 @@
 
 #include "amglobal.h"
 
-namespace MapPainter
-{
-struct MapItem
-{
-    QRectF geometry;
-    QRectF zoomGeometry;
-    int type;
-    int id;
-};
-struct Map
-{
-    QPixmap image;
-    QString mapName;
-    QList<MapItem> items;
-};
-}
-
-using namespace MapPainter;
 using namespace AMStd;
 
+class AMSearcherBase;
 class AMMapPainter : public QWidget
 {
     Q_OBJECT
@@ -37,7 +19,11 @@ public:
     explicit AMMapPainter(QWidget *parent = 0);
     void addMap(const QPixmap &pixmap,
                 const QString &mapInfoFilePath);
+    Map map(const int &index) const;
     qreal zoom() const;
+
+    AMSearcherBase *searcher() const;
+    void setSearcher(AMSearcherBase *searcher);
 
 signals:
     void requireSearchPath(int type, int id, int floor);
@@ -46,6 +32,8 @@ public slots:
     void setZoom(const qreal &zoom);
     void setCurrentIndex(int index);
     void onActionPressed(QPoint position);
+    void drawRoute();
+    void clearRoute();
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -60,6 +48,8 @@ private:
     QString m_mapItemTypeName[MapItemTypeCount];
     QHash<QString, int> m_typeTextToIndex;
 
+    bool m_drawRoute=false;
+    AMSearcherBase *m_searcher=nullptr;
     qreal m_zoom=1.0;
 };
 

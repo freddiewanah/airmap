@@ -5,13 +5,11 @@
 #include <QFile>
 #include <QPainter>
 
+#include "amsearcherbase.h"
+
 #include "ammappainter.h"
 
 #include <QDebug>
-
-QT_BEGIN_NAMESPACE
-  extern Q_WIDGETS_EXPORT void qt_blurImage( QPainter *p, QImage &blurImage, qreal radius, bool quality, bool alphaOnly, int transposed = 0 );
-QT_END_NAMESPACE
 
 AMMapPainter::AMMapPainter(QWidget *parent) :
     QWidget(parent)
@@ -71,6 +69,11 @@ void AMMapPainter::addMap(const QPixmap &pixmap, const QString &mapInfoFilePath)
     }
 }
 
+Map AMMapPainter::map(const int &index) const
+{
+    return m_mapList.at(index);
+}
+
 void AMMapPainter::setCurrentIndex(int index)
 {
     if(index>-1 && index<m_mapList.size())
@@ -98,6 +101,18 @@ void AMMapPainter::onActionPressed(QPoint position)
             }
         }
     }
+}
+
+void AMMapPainter::drawRoute()
+{
+    m_drawRoute=true;
+    update();
+}
+
+void AMMapPainter::clearRoute()
+{
+    m_drawRoute=false;
+    update();
 }
 
 void AMMapPainter::paintEvent(QPaintEvent *event)
@@ -132,6 +147,21 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
                                      iconSize,
                                      iconSize),
                                m_iconList.at((*i).type).pixmap(iconSize, iconSize));
+        }
+
+        painter.setPen(QColor(255,0,0));
+        if(m_drawRoute)
+        {
+            //Get route points from searcher.
+            QJsonObject currentPath=m_searcher->path();
+            QJsonArray pointsArray=currentPath.value("Path").toArray();
+            for(QJsonArray::iterator i=pointsArray.begin();
+                i!=pointsArray.end();
+                ++i)
+            {
+                QJsonArray point=(*i).toArray();
+                painter.drawPoint(point.at(0).toInt(), point.at(1).toInt());
+            }
         }
     }
 }
@@ -185,6 +215,18 @@ inline void AMMapPainter::updateImage()
     resize(m_currentImage.size());
     //Update the painter to update the image.
     update();
+}
+
+AMSearcherBase *AMMapPainter::searcher() const
+{
+    return m_searcher;
+}
+
+void AMMapPainter::setSearcher(AMSearcherBase *searcher)
+{
+    m_searcher = searcher;
+    connect(m_searcher, SIGNAL(searchSuccess()),
+            this, SLOT(drawRoute()));
 }
 
 qreal AMMapPainter::zoom() const

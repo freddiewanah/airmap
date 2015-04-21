@@ -5,6 +5,7 @@
 #include <QPropertyAnimation>
 #include <QJsonObject>
 
+#include "amsearcher.h"
 #include "amtouchsrollarea.h"
 #include "amlocationmanager.h"
 #include "amhotpoint.h"
@@ -38,6 +39,9 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
                          "://resource/maps/square_0_2d_F1s.json");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
                          "://resource/maps/square_0_2d_F2s.json");
+    //Configure the searcher.
+    setSearcher(new AMSearcher);
+    m_mapPainter->setSearcher(m_searcher);
 
     m_mapView->setWidget(m_mapPainter);
     connect(m_mapView, &AMTouchSrollArea::touch,
@@ -181,9 +185,6 @@ void AMMainWindow::startSearch(const int &type,
                                const int &index,
                                const int &floor)
 {
-    //----Debug----
-    qDebug()<<type<<index<<floor;
-
     //Hide the suggestions and buttons.
     hideSearchHelperWidgets();
     //Show the stop button.
@@ -235,6 +236,8 @@ void AMMainWindow::searchPathTo(const QJsonObject &details)
     {
         return;
     }
+    //Make searcher to search.
+    m_searcher->searchPath(details);
 }
 
 void AMMainWindow::filterChanged(const QString &text)
@@ -336,6 +339,8 @@ void AMMainWindow::setSearcher(AMSearcherBase *searcher)
     {
         return;
     }
+    //Give the map painter to searcher.
+    m_searcher->setMapPainter(m_mapPainter);
     //Check if the location manager has been set before.
     //Give the location manager to the search if it's possible.
     if(m_locationManager!=nullptr)
