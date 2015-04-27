@@ -63,7 +63,8 @@ private:
     QJsonObject m_pathResult;
 
     int m_arr[16] = { 0, 1, 1, 0, -1, 0, 0, -1, 1, 1, -1, -1, 1, -1, -1, 1 };
-    int m_borderWidth=20;
+    int m_borderWidth=0;
+    int m_mapIndex=-1;
 };
 
 #endif // AMSEARCHER_H

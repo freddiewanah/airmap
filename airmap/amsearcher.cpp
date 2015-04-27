@@ -25,8 +25,8 @@ void AMSearcher::searchPath(const QJsonObject &target)
     //Clear the previous path result;
     clearSearchResult();
 
-    int currentMapIndex=target.value("FromZ").toInt();
-    const Map &currentMap=m_mapPainter->map(currentMapIndex);
+    m_mapIndex=target.value("FromZ").toInt();
+    const Map &currentMap=m_mapPainter->map(m_mapIndex);
     QSize mapSize=currentMap.image.size();
     int startX=((qreal)mapSize.width())*target.value("FromX").toDouble(),
         startY=((qreal)mapSize.height())*target.value("FromY").toDouble(),
@@ -167,6 +167,7 @@ bool AMSearcher::aStarCanbe(int x, int y)
 void AMSearcher::aStarRecall(Dot now)
 {
     QJsonArray dots, tempDotData;
+    tempDotData.append(m_mapIndex);
     tempDotData.append(now.x);
     tempDotData.append(now.y);
     dots.append(tempDotData);
@@ -174,6 +175,7 @@ void AMSearcher::aStarRecall(Dot now)
     {
         now = m_dot[now.Fx][now.Fy];
         QJsonArray dotData;
+        dotData.append(m_mapIndex);
         dotData.append(now.x);
         dotData.append(now.y);
         dots.append(dotData);

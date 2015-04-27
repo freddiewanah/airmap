@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QFile>
 #include <QPainter>
+#include <QTimeLine>
+#include <QTimer>
 
 #include "amsearcherbase.h"
 #include "ammapitemdetail.h"
@@ -75,6 +77,41 @@ AMMapPainter::AMMapPainter(QWidget *parent) :
             this, SLOT(hideItemDetail()));
     connect(m_itemDetail, SIGNAL(requireSearchPath(int,int,int)),
             this, SIGNAL(requireSearchPath(int,int,int)));
+
+    m_delay=new QTimer(this);
+    m_delay->setSingleShot(true);
+    m_delay->setInterval(800);
+
+    int minimalBorderSize=40, maximumBorderSize=60;
+    m_breathTimeLine=new QTimeLine(300, this);
+    connect(m_delay, SIGNAL(timeout()),
+            m_breathTimeLine, SLOT(start()));
+    m_breathTimeLine->setUpdateInterval(20);
+    m_breathTimeLine->setEasingCurve(QEasingCurve::InCubic);
+    m_breathTimeLine->setFrameRange(minimalBorderSize, maximumBorderSize);
+    connect(m_breathTimeLine, &QTimeLine::finished,
+            [=]
+            {
+                if(m_tracking)
+                {
+                    if(m_breathTimeLine->startFrame()==minimalBorderSize)
+                    {
+                        m_breathTimeLine->setFrameRange(maximumBorderSize, minimalBorderSize);
+                        m_breathTimeLine->start();
+                    }
+                    else
+                    {
+                        m_breathTimeLine->setFrameRange(minimalBorderSize, maximumBorderSize);
+                        m_delay->start();
+                    }
+                }
+            });
+    connect(m_breathTimeLine, &QTimeLine::frameChanged,
+            [=](const int &frame)
+            {
+                m_borderWidth=frame/10;
+                update();
+            });
 }
 
 void AMMapPainter::addMap(const QPixmap &pixmap,
@@ -188,8 +225,13 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
                 ++i)
             {
                 QJsonArray point=(*i).toArray();
-                painter.drawPoint(((qreal)point.at(0).toInt())*m_zoom,
-                                  ((qreal)point.at(1).toInt())*m_zoom);
+                if(point.at(0).toInt()==m_floorIndex)
+                {
+                    painter.drawEllipse(QPoint(((qreal)point.at(1).toInt())*m_zoom,
+                                               ((qreal)point.at(2).toInt())*m_zoom),
+                                        5,
+                                        5);
+                }
             }
         }
     }
@@ -197,24 +239,31 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
     //Check if enabled tracking.
     if(m_tracking && m_locationManager)
     {
-        double x, y, floor;
-        if(m_locationManager->getCurrentPos(x, y, floor))
-        {
             //Check if the floor is the current floor.
-            if((int)floor==m_floorIndex)
+            if((int)m_currentFloor==m_floorIndex)
             {
-                QPen borderPen(QColor(255,255,255));
-                borderPen.setWidth(5);
-                painter.setPen(borderPen);
-                painter.setBrush(QColor(79,132,251));
-                //Draw the circle to the point.
-                painter.drawEllipse(QPointF(x * (qreal)width(),
-                                            y * (qreal)height()),
+                painter.setPen(Qt::NoPen);
+                QPointF trackPointCenter=QPointF(m_currentX * (qreal)width(),
+                                                 m_currentY * (qreal)height());
+                painter.setBrush(QColor(255,255,255));
+                painter.drawEllipse(trackPointCenter,
                                     m_trackPointSize,
                                     m_trackPointSize);
+                painter.setBrush(QColor(79,132,251));
+                //Draw the circle to the point.
+                painter.drawEllipse(trackPointCenter,
+                                    m_trackPointSize-m_borderWidth,
+                                    m_trackPointSize-m_borderWidth);
             }
-        }
     }
+}
+
+void AMMapPainter::setTrackingData(double a, double b, double c)
+{
+    m_currentX=a;
+    m_currentY=b;
+    m_currentFloor=c;
+    update();
 }
 
 void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
@@ -267,6 +316,7 @@ inline void AMMapPainter::updateImage()
     //Update the painter to update the image.
     update();
 }
+
 AMLocationManagerBase *AMMapPainter::locationManager() const
 {
     return m_locationManager;
@@ -277,6 +327,10 @@ void AMMapPainter::setLocationManager(AMLocationManagerBase *locationManager)
     m_locationManager = locationManager;
 }
 
+QString AMMapPainter::itemName(int type)
+{
+    return m_mapItemTypeName[type];
+}
 
 bool AMMapPainter::tracking() const
 {
@@ -286,6 +340,21 @@ bool AMMapPainter::tracking() const
 void AMMapPainter::setTracking(bool tracking)
 {
     m_tracking = tracking;
+    if(m_tracking) //If enabled tracking.
+    {
+        m_locationManager->getCurrentPos(m_currentX, m_currentY, m_currentFloor);
+        m_locationManager->startTracking();
+        connect(m_locationManager, &AMLocationManagerBase::pointGet,
+                this, &AMMapPainter::setTrackingData);
+        m_breathTimeLine->start();
+    }
+    else
+    {
+        disconnect(m_locationManager, &AMLocationManagerBase::pointGet,
+                   this, &AMMapPainter::setTrackingData);
+        m_breathTimeLine->stop();
+        update();
+    }
 }
 
 AMSearcherBase *AMMapPainter::searcher() const

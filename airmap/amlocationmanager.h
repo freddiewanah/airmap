@@ -14,7 +14,6 @@ public:
     void setUrl(const QString &url);
 
 signals:
-    void positionUpdate(double a, double b, double c);
 
 public slots:
     void startTracking();
@@ -28,6 +27,10 @@ private:
     QNetworkAccessManager *m_networkManager;
     QString m_url;
     QTimer *m_timeout, *m_tracking;
+
+    //----Debug---
+    QTimer *m_debugger;
+    qreal m_debugLength=0.0;
 };
 
 #endif // AMLOCATIONMANAGER_H

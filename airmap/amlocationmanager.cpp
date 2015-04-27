@@ -14,15 +14,23 @@ AMLocationManager::AMLocationManager(QObject *parent) :
     m_timeout=new QTimer(this);
     m_timeout->setInterval(1000);
     m_tracking=new QTimer(this);
-    m_tracking->setInterval(100);
+    m_tracking->setInterval(20);
+    connect(m_tracking, SIGNAL(timeout()),
+            this, SLOT(onActionUpdatePosition()));
     m_networkManager=new QNetworkAccessManager(this);
+
+    //----Debug----
+    m_debugger=new QTimer(this);
+    m_debugger->setInterval(50);
+    connect(m_debugger, &QTimer::timeout, [=]{m_debugLength+=0.01;});
+//    m_debugger->start();
 }
 
 bool AMLocationManager::getCurrentPos(double &a, double &b, double &c)
 {
     //----Debug-----
-    a=0.5;
-    b=0.5;
+    a=0.3;
+    b=0.3;
     c=1;
     return true;
     //Get information.
@@ -67,7 +75,7 @@ void AMLocationManager::onActionUpdatePosition()
     double a,b,c;
     if(getCurrentPos(a,b,c))
     {
-        emit positionUpdate(a,b,c);
+        emit pointGet(a,b,c);
     }
 }
 

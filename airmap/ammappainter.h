@@ -12,6 +12,7 @@
 using namespace AMStd;
 
 class QLabel;
+class QTimeLine;
 class AMMapItemDetail;
 class AMSearcherBase;
 class AMLocationManagerBase;
@@ -34,6 +35,9 @@ public:
     AMLocationManagerBase *locationManager() const;
     void setLocationManager(AMLocationManagerBase *locationManager);
 
+    //Debug
+    QString itemName(int type);
+
 signals:
     void requireSearchPath(int type, int id, int floor);
 
@@ -51,16 +55,20 @@ public slots:
 protected:
     void paintEvent(QPaintEvent *event);
 
+private slots:
+    void setTrackingData(double a, double b, double c);
+
 private:
     inline void loadMapInfo(Map &map, const QString &filePath);
     inline void updateImage();
     QList<Map> m_mapList;
     QList<QIcon> m_iconList;
     QPixmap m_currentImage;
-    int m_floorIndex=-1;
-    qreal m_trackPointSize=10.0;
+    int m_floorIndex=-1, m_borderWidth=2;
+    qreal m_trackPointSize=13.0;
     QString m_mapItemTypeName[MapItemTypeCount];
     QHash<QString, int> m_typeTextToIndex;
+    double m_currentX, m_currentY, m_currentFloor;
 
     bool m_drawRoute=false, m_tracking=false;
     AMSearcherBase *m_searcher=nullptr;
@@ -70,6 +78,9 @@ private:
     AMMapItemDetail *m_itemDetail;
     QLabel *m_indicator;
     QPixmap m_indicatorLeftIcon, m_indicatorRightIcon;
+
+    QTimeLine *m_breathTimeLine;
+    QTimer *m_delay;
 };
 
 #endif // AMMAPPAINTER_H
