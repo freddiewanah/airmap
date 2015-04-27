@@ -9,6 +9,7 @@
 
 #include "amsearcherbase.h"
 #include "ammapitemdetail.h"
+#include "amlocationmanagerbase.h"
 
 #include "ammappainter.h"
 
@@ -187,7 +188,30 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
                 ++i)
             {
                 QJsonArray point=(*i).toArray();
-                painter.drawPoint(point.at(0).toInt(), point.at(1).toInt());
+                painter.drawPoint(((qreal)point.at(0).toInt())*m_zoom,
+                                  ((qreal)point.at(1).toInt())*m_zoom);
+            }
+        }
+    }
+
+    //Check if enabled tracking.
+    if(m_tracking && m_locationManager)
+    {
+        double x, y, floor;
+        if(m_locationManager->getCurrentPos(x, y, floor))
+        {
+            //Check if the floor is the current floor.
+            if((int)floor==m_floorIndex)
+            {
+                QPen borderPen(QColor(255,255,255));
+                borderPen.setWidth(5);
+                painter.setPen(borderPen);
+                painter.setBrush(QColor(79,132,251));
+                //Draw the circle to the point.
+                painter.drawEllipse(QPointF(x * (qreal)width(),
+                                            y * (qreal)height()),
+                                    m_trackPointSize,
+                                    m_trackPointSize);
             }
         }
     }
@@ -242,6 +266,26 @@ inline void AMMapPainter::updateImage()
     resize(m_currentImage.size());
     //Update the painter to update the image.
     update();
+}
+AMLocationManagerBase *AMMapPainter::locationManager() const
+{
+    return m_locationManager;
+}
+
+void AMMapPainter::setLocationManager(AMLocationManagerBase *locationManager)
+{
+    m_locationManager = locationManager;
+}
+
+
+bool AMMapPainter::tracking() const
+{
+    return m_tracking;
+}
+
+void AMMapPainter::setTracking(bool tracking)
+{
+    m_tracking = tracking;
 }
 
 AMSearcherBase *AMMapPainter::searcher() const
@@ -306,7 +350,6 @@ void AMMapPainter::showItemDetail(const MapItem &item)
     m_indicator->move(indicatorPos);
     m_itemDetail->show();
     m_indicator->show();
-    //emit requireSearchPath((*i).type, (*i).id, m_floorIndex);
 }
 
 qreal AMMapPainter::zoom() const

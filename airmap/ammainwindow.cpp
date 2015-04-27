@@ -31,6 +31,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;
+    m_mapPainter->setLocationManager(m_locationManager);
     connect(m_mapPainter, &AMMapPainter::requireSearchPath,
             this, &AMMainWindow::startSearch);
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_B1s.png"),
@@ -42,6 +43,7 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
                          "://resource/maps/square_0_2d_F2s.json",
                          "出发大厅");
+    m_mapPainter->setTracking(true);
     //Configure the searcher.
     setSearcher(new AMSearcher);
     m_mapPainter->setSearcher(m_searcher);
@@ -97,6 +99,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_stopNavigate->setText("结束");
     m_stopNavigate->hideButton();
     searchBoxLayout->addWidget(m_stopNavigate);
+    connect(m_stopNavigate, &AMLabelButton::clicked,
+            this, &AMMainWindow::onActionStopNavigate);
 
     //Initial the search suggestion widget.
     m_searchSuggestion=new AMSearchSuggetions(this);
@@ -267,19 +271,18 @@ void AMMainWindow::onActionSuggetionRequireSearch(const QModelIndex &current)
     }
 }
 
-void AMMainWindow::onActionMapRequireSearch(const int &floor,
-                                            const int &type,
-                                            const int &index)
-{
-    ;
-}
-
 void AMMainWindow::onActionCancelSearch()
 {
     m_mapView->setFocus(Qt::MouseFocusReason);
     m_searchBoxText->clear();
     //Hide the search suggestions.
     onActionSearchFocusOut();
+}
+
+void AMMainWindow::onActionStopNavigate()
+{
+    //First we need to clear the backend.
+    ;
 }
 
 void AMMainWindow::onActionSearchFocusIn()

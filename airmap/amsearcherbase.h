@@ -21,6 +21,7 @@ signals:
     void searchSuccess();
 
 public slots:
+    virtual void clearSearchResult()=0;
     virtual void setMapPainter(AMMapPainter *mapPainter)=0;
     virtual void searchPath(const QJsonObject &target)=0;
     virtual void setLocationManager(AMLocationManagerBase *locationManager)=0;

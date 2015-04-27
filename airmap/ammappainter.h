@@ -14,6 +14,7 @@ using namespace AMStd;
 class QLabel;
 class AMMapItemDetail;
 class AMSearcherBase;
+class AMLocationManagerBase;
 class AMMapPainter : public QWidget
 {
     Q_OBJECT
@@ -28,10 +29,17 @@ public:
     AMSearcherBase *searcher() const;
     void setSearcher(AMSearcherBase *searcher);
 
+    bool tracking() const;
+
+    AMLocationManagerBase *locationManager() const;
+    void setLocationManager(AMLocationManagerBase *locationManager);
+
 signals:
     void requireSearchPath(int type, int id, int floor);
 
 public slots:
+    void setTracking(bool tracking);
+
     void hideItemDetail();
     void showItemDetail(const MapItem &item);
     void setZoom(const qreal &zoom);
@@ -50,11 +58,13 @@ private:
     QList<QIcon> m_iconList;
     QPixmap m_currentImage;
     int m_floorIndex=-1;
+    qreal m_trackPointSize=10.0;
     QString m_mapItemTypeName[MapItemTypeCount];
     QHash<QString, int> m_typeTextToIndex;
 
-    bool m_drawRoute=false;
+    bool m_drawRoute=false, m_tracking=false;
     AMSearcherBase *m_searcher=nullptr;
+    AMLocationManagerBase *m_locationManager=nullptr;
     qreal m_zoom=1.0;
 
     AMMapItemDetail *m_itemDetail;

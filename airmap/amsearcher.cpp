@@ -22,8 +22,8 @@ AMLocationManagerBase *AMSearcher::locationManager()
 
 void AMSearcher::searchPath(const QJsonObject &target)
 {
-    //Clear the path result;
-    m_pathResult=QJsonObject();
+    //Clear the previous path result;
+    clearSearchResult();
 
     int currentMapIndex=target.value("FromZ").toInt();
     const Map &currentMap=m_mapPainter->map(currentMapIndex);
@@ -67,13 +67,13 @@ void AMSearcher::searchPath(const QJsonObject &target)
             continue;
         }
 
-        if(Search(m_now, 10, 0, 4))
+        if(aStarSearch(m_now, 10, 0, 4))
         {
             break;
         }
         else
         {
-            if (Search(m_now, 14, 4, 8))
+            if (aStarSearch(m_now, 14, 4, 8))
             {
                 break;
             }
@@ -87,9 +87,12 @@ void AMSearcher::setLocationManager(AMLocationManagerBase *locationManager)
     m_locationManager = locationManager;
 }
 
-void AMSearcher::loadMap(const Map &map, int &endX, int &endY, const int &type, const int &index)
+void AMSearcher::loadMap(const Map &map,
+                         int &endX,
+                         int &endY,
+                         const int &type,
+                         const int &index)
 {
-    qDebug()<<"type="<<type<<"index="<<index;
     //Clear cache.
     for (int i = 0; i < 2000; i++)
     {
@@ -105,7 +108,6 @@ void AMSearcher::loadMap(const Map &map, int &endX, int &endY, const int &type, 
             m_dot[i][j].Fy = -1;
         }
     }
-
     //Set map data.
     QList<MapItem> items=map.items;
     for(QList<MapItem>::iterator i=items.begin();
@@ -114,16 +116,34 @@ void AMSearcher::loadMap(const Map &map, int &endX, int &endY, const int &type, 
     {
         if((*i).type==type && (*i).id==index)
         {
+            //Save the endX and end Y.
             QPoint destinationPoint=(*i).geometry.center().toPoint();
             endX=destinationPoint.x();
             endY=destinationPoint.y();
         }
         else
         {
-            int hS=(int)((*i).geometry.x()),
-                hE=hS+((int)((*i).geometry.width())),
-                vS=(int)((*i).geometry.y()),
-                vE=vS+((int)((*i).geometry.height()));
+            //Set the point disabled.
+            int hS=(int)((*i).geometry.x())-m_borderWidth,
+                hE=hS+((int)((*i).geometry.width()))+(m_borderWidth<<1),
+                vS=(int)((*i).geometry.y())-m_borderWidth,
+                vE=vS+((int)((*i).geometry.height()))+(m_borderWidth<<1);
+            if(hS<0)
+            {
+                hS=0;
+            }
+            if(hE>1999)
+            {
+                hE=1999;
+            }
+            if(vS<0)
+            {
+                vS=0;
+            }
+            if(vE>1999)
+            {
+                vE=1999;
+            }
             for(int h=hS; h<hE; h++)
             {
                 for(int v=vS; v<vE; v++)
@@ -135,7 +155,7 @@ void AMSearcher::loadMap(const Map &map, int &endX, int &endY, const int &type, 
     }
 }
 
-bool AMSearcher::canbe(int x, int y)
+bool AMSearcher::aStarCanbe(int x, int y)
 {
     if (x >= 0 && x < 2000 && y >= 0 && y < 2000 && m_dot[x][y].status != 1)
     {
@@ -144,7 +164,7 @@ bool AMSearcher::canbe(int x, int y)
     return false;
 }
 
-void AMSearcher::Recall(Dot now)
+void AMSearcher::aStarRecall(Dot now)
 {
     QJsonArray dots, tempDotData;
     tempDotData.append(now.x);
@@ -162,13 +182,13 @@ void AMSearcher::Recall(Dot now)
     m_pathResult.insert("Path", dots);
 }
 
-bool AMSearcher::Search(Dot now, int value, int startarr, int endarr)
+bool AMSearcher::aStarSearch(Dot now, int value, int startarr, int endarr)
 {
     int x = now.x, y = now.y;
     bool flag = false;
     for (int i = startarr; i < endarr; i++)
     {
-        if (canbe(x + m_arr[2 * i], y + m_arr[2 * i + 1]))
+        if (aStarCanbe(x + m_arr[2 * i], y + m_arr[2 * i + 1]))
         {
             Dot *current = &m_dot[x + m_arr[2 * i]][y + m_arr[2 * i + 1]];
             if ((*current).status == 2)
@@ -176,7 +196,7 @@ bool AMSearcher::Search(Dot now, int value, int startarr, int endarr)
                 (*current).g = now.g + value;
                 (*current).Fx = now.x;
                 (*current).Fy = now.y;
-                Recall((*current));
+                aStarRecall((*current));
                 emit searchSuccess();
                 flag = true;
                 break;
@@ -199,6 +219,12 @@ bool AMSearcher::Search(Dot now, int value, int startarr, int endarr)
 AMMapPainter *AMSearcher::mapPainter()
 {
     return m_mapPainter;
+}
+
+void AMSearcher::clearSearchResult()
+{
+    //Clear the path result.
+    m_pathResult=QJsonObject();
 }
 
 void AMSearcher::setMapPainter(AMMapPainter *mapPainter)

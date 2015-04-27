@@ -26,6 +26,7 @@ public:
 signals:
 
 public slots:
+    void clearSearchResult();
     void setMapPainter(AMMapPainter *mapPainter);
     void searchPath(const QJsonObject &target);
     void setLocationManager(AMLocationManagerBase *locationManager);
@@ -51,9 +52,9 @@ private:
     };
     Dot m_dot[2009][2009];
     void loadMap(const Map &map, int &endX, int &endY, const int &type, const int &index);
-    bool canbe(int x, int y);
-    void Recall(Dot m_now);
-    bool Search(Dot m_now, int value, int startarr, int endarr);
+    bool aStarCanbe(int x, int y);
+    void aStarRecall(Dot m_now);
+    bool aStarSearch(Dot m_now, int value, int startarr, int endarr);
     AMLocationManagerBase *m_locationManager=nullptr;
     AMMapPainter *m_mapPainter=nullptr;
     priority_queue<Dot> m_q;
@@ -62,6 +63,7 @@ private:
     QJsonObject m_pathResult;
 
     int m_arr[16] = { 0, 1, 1, 0, -1, 0, 0, -1, 1, 1, -1, -1, 1, -1, -1, 1 };
+    int m_borderWidth=20;
 };
 
 #endif // AMSEARCHER_H
