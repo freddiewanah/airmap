@@ -11,6 +11,8 @@
 
 using namespace AMStd;
 
+class QLabel;
+class AMMapItemDetail;
 class AMSearcherBase;
 class AMMapPainter : public QWidget
 {
@@ -18,7 +20,8 @@ class AMMapPainter : public QWidget
 public:
     explicit AMMapPainter(QWidget *parent = 0);
     void addMap(const QPixmap &pixmap,
-                const QString &mapInfoFilePath);
+                const QString &mapInfoFilePath,
+                const QString &mapCaption);
     Map map(const int &index) const;
     qreal zoom() const;
 
@@ -29,6 +32,8 @@ signals:
     void requireSearchPath(int type, int id, int floor);
 
 public slots:
+    void hideItemDetail();
+    void showItemDetail(const MapItem &item);
     void setZoom(const qreal &zoom);
     void setCurrentIndex(int index);
     void onActionPressed(QPoint position);
@@ -51,6 +56,10 @@ private:
     bool m_drawRoute=false;
     AMSearcherBase *m_searcher=nullptr;
     qreal m_zoom=1.0;
+
+    AMMapItemDetail *m_itemDetail;
+    QLabel *m_indicator;
+    QPixmap m_indicatorLeftIcon, m_indicatorRightIcon;
 };
 
 #endif // AMMAPPAINTER_H

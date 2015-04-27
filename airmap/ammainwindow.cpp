@@ -34,11 +34,14 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     connect(m_mapPainter, &AMMapPainter::requireSearchPath,
             this, &AMMainWindow::startSearch);
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_B1s.png"),
-                         "://resource/maps/square_0_2d_B1s.json");
+                         "://resource/maps/square_0_2d_B1s.json",
+                         "地下公交入站口");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F1s.png"),
-                         "://resource/maps/square_0_2d_F1s.json");
+                         "://resource/maps/square_0_2d_F1s.json",
+                         "到达大厅");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
-                         "://resource/maps/square_0_2d_F2s.json");
+                         "://resource/maps/square_0_2d_F2s.json",
+                         "出发大厅");
     //Configure the searcher.
     setSearcher(new AMSearcher);
     m_mapPainter->setSearcher(m_searcher);
@@ -122,8 +125,15 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
             m_mapPainter, SLOT(setZoom(qreal)));
     connect(m_mapView, SIGNAL(pressed()),
             m_hotPoint, SLOT(foldHotPoint()));
+    connect(m_hotPoint, SIGNAL(requireChangeMap(int)),
+            m_mapPainter, SLOT(hideItemDetail()));
+    connect(m_mapView, SIGNAL(pressed()),
+            m_mapPainter, SLOT(hideItemDetail()));
     m_hotPoint->move(0, m_searchBoxHeight);
     m_hotPoint->resize(50, 50);
+
+    //Set the default zoom
+    m_hotPoint->setZoom(50);
 }
 
 AMMainWindow::~AMMainWindow()

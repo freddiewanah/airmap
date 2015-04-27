@@ -20,6 +20,7 @@ signals:
     void requireCheckPosition();
 
 public slots:
+    void setZoom(int zoomSize);
     void onActionShowItems();
     void onActionHideItems();
     void foldHotPoint();

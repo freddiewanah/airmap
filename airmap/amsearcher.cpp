@@ -30,13 +30,19 @@ void AMSearcher::searchPath(const QJsonObject &target)
     QSize mapSize=currentMap.image.size();
     int startX=((qreal)mapSize.width())*target.value("FromX").toDouble(),
         startY=((qreal)mapSize.height())*target.value("FromY").toDouble(),
-        endX, endY;
+        endX=-1, endY=-1;
     loadMap(currentMap,
             endX,
             endY,
             target.value("DestinationType").toInt(),
             target.value("DestinationIndex").toInt());
 
+    //Check if we can't find the end point.
+    if(endX==-1 || endY==-1)
+    {
+        qDebug()<<"Error! We cannot find the point!";
+        return;
+    }
     m_end = m_dot[endX][endY];
     m_dot[endX][endY].status = 2;
     m_dot[startX][startY].g = 0;
@@ -83,6 +89,7 @@ void AMSearcher::setLocationManager(AMLocationManagerBase *locationManager)
 
 void AMSearcher::loadMap(const Map &map, int &endX, int &endY, const int &type, const int &index)
 {
+    qDebug()<<"type="<<type<<"index="<<index;
     //Clear cache.
     for (int i = 0; i < 2000; i++)
     {

@@ -18,6 +18,7 @@ struct MapItem
 };
 struct Map
 {
+    QString caption;
     QPixmap image;
     QString mapName;
     QList<MapItem> items;
