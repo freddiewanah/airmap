@@ -39,10 +39,8 @@ private slots:
     void searchPathTo(const QJsonObject &details);
     void filterChanged(const QString &text);
     void onActionSuggetionRequireSearch(const QModelIndex &current);
-    void onActionMapRequireSearch(const int &floor,
-                                  const int &type,
-                                  const int &index);
     void onActionCancelSearch();
+    void onActionStopNavigate();
     void onActionSearchFocusIn();
     void onActionSearchFocusOut();
 

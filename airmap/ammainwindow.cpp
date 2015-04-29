@@ -5,6 +5,7 @@
 #include <QPropertyAnimation>
 #include <QJsonObject>
 
+#include "amsearcher.h"
 #include "amtouchsrollarea.h"
 #include "amlocationmanager.h"
 #include "amhotpoint.h"
@@ -30,14 +31,22 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_mapView->setFrameShape(QFrame::NoFrame);
     //Initial the map painter.
     m_mapPainter=new AMMapPainter;
+    m_mapPainter->setLocationManager(m_locationManager);
     connect(m_mapPainter, &AMMapPainter::requireSearchPath,
             this, &AMMainWindow::startSearch);
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_B1s.png"),
-                         "://resource/maps/square_0_2d_B1s.json");
+                         "://resource/maps/square_0_2d_B1s.json",
+                         "地下公交入站口");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F1s.png"),
-                         "://resource/maps/square_0_2d_F1s.json");
+                         "://resource/maps/square_0_2d_F1s.json",
+                         "到达大厅");
     m_mapPainter->addMap(QPixmap("://resource/maps/square_0_2d_F2s.png"),
-                         "://resource/maps/square_0_2d_F2s.json");
+                         "://resource/maps/square_0_2d_F2s.json",
+                         "出发大厅");
+    m_mapPainter->setTracking(true);
+    //Configure the searcher.
+    setSearcher(new AMSearcher);
+    m_mapPainter->setSearcher(m_searcher);
 
     m_mapView->setWidget(m_mapPainter);
     connect(m_mapView, &AMTouchSrollArea::touch,
@@ -90,6 +99,8 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     m_stopNavigate->setText("结束");
     m_stopNavigate->hideButton();
     searchBoxLayout->addWidget(m_stopNavigate);
+    connect(m_stopNavigate, &AMLabelButton::clicked,
+            this, &AMMainWindow::onActionStopNavigate);
 
     //Initial the search suggestion widget.
     m_searchSuggestion=new AMSearchSuggetions(this);
@@ -118,8 +129,15 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
             m_mapPainter, SLOT(setZoom(qreal)));
     connect(m_mapView, SIGNAL(pressed()),
             m_hotPoint, SLOT(foldHotPoint()));
+    connect(m_hotPoint, SIGNAL(requireChangeMap(int)),
+            m_mapPainter, SLOT(hideItemDetail()));
+    connect(m_mapView, SIGNAL(pressed()),
+            m_mapPainter, SLOT(hideItemDetail()));
     m_hotPoint->move(0, m_searchBoxHeight);
     m_hotPoint->resize(50, 50);
+
+    //Set the default zoom
+    m_hotPoint->setZoom(50);
 }
 
 AMMainWindow::~AMMainWindow()
@@ -181,9 +199,6 @@ void AMMainWindow::startSearch(const int &type,
                                const int &index,
                                const int &floor)
 {
-    //----Debug----
-    qDebug()<<type<<index<<floor;
-
     //Hide the suggestions and buttons.
     hideSearchHelperWidgets();
     //Show the stop button.
@@ -235,6 +250,8 @@ void AMMainWindow::searchPathTo(const QJsonObject &details)
     {
         return;
     }
+    //Make searcher to search.
+    m_searcher->searchPath(details);
 }
 
 void AMMainWindow::filterChanged(const QString &text)
@@ -254,19 +271,18 @@ void AMMainWindow::onActionSuggetionRequireSearch(const QModelIndex &current)
     }
 }
 
-void AMMainWindow::onActionMapRequireSearch(const int &floor,
-                                            const int &type,
-                                            const int &index)
-{
-    ;
-}
-
 void AMMainWindow::onActionCancelSearch()
 {
     m_mapView->setFocus(Qt::MouseFocusReason);
     m_searchBoxText->clear();
     //Hide the search suggestions.
     onActionSearchFocusOut();
+}
+
+void AMMainWindow::onActionStopNavigate()
+{
+    //First we need to clear the backend.
+    ;
 }
 
 void AMMainWindow::onActionSearchFocusIn()
@@ -336,6 +352,8 @@ void AMMainWindow::setSearcher(AMSearcherBase *searcher)
     {
         return;
     }
+    //Give the map painter to searcher.
+    m_searcher->setMapPainter(m_mapPainter);
     //Check if the location manager has been set before.
     //Give the location manager to the search if it's possible.
     if(m_locationManager!=nullptr)
