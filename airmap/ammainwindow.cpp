@@ -48,7 +48,9 @@ AMMainWindow::AMMainWindow(QWidget *parent) :
     setSearcher(new AMSearcher);
     m_mapPainter->setSearcher(m_searcher);
 
-    m_mapView->setWidget(m_mapPainter);
+    m_mapView->setMapPainter(m_mapPainter);
+    connect(m_mapPainter, SIGNAL(requireMoveCenterTo(QRect)),
+            m_mapView, SLOT(onActionMovePoint(QRect)));
     connect(m_mapView, &AMTouchSrollArea::touch,
             m_mapPainter, &AMMapPainter::onActionPressed);
 

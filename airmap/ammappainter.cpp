@@ -82,8 +82,8 @@ AMMapPainter::AMMapPainter(QWidget *parent) :
     m_delay->setSingleShot(true);
     m_delay->setInterval(800);
 
-    int minimalBorderSize=40, maximumBorderSize=60;
-    m_breathTimeLine=new QTimeLine(300, this);
+    int minimalBorderSize=45, maximumBorderSize=60;
+    m_breathTimeLine=new QTimeLine(350, this);
     connect(m_delay, SIGNAL(timeout()),
             m_breathTimeLine, SLOT(start()));
     m_breathTimeLine->setUpdateInterval(20);
@@ -214,9 +214,10 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
                                m_iconList.at((*i).type).pixmap(iconSize, iconSize));
         }
 
-        painter.setPen(QColor(255,0,0));
         if(m_drawRoute)
         {
+            painter.setPen(QColor(255,0,0));
+            painter.setBrush(QColor(255,0,0));
             //Get route points from searcher.
             QJsonObject currentPath=m_searcher->path();
             QJsonArray pointsArray=currentPath.value("Path").toArray();
@@ -415,6 +416,7 @@ void AMMapPainter::showItemDetail(const MapItem &item)
     {
         preferPos.setY(height()-m_itemDetail->height()-5);
     }
+    emit requireMoveCenterTo(QRect(preferPos, m_itemDetail->size()));
     m_itemDetail->move(preferPos);
     m_indicator->move(indicatorPos);
     m_itemDetail->show();

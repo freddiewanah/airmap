@@ -40,6 +40,7 @@ public:
 
 signals:
     void requireSearchPath(int type, int id, int floor);
+    void requireMoveCenterTo(QRect leftTop);
 
 public slots:
     void setTracking(bool tracking);

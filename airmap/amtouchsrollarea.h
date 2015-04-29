@@ -3,6 +3,7 @@
 
 #include <QScrollArea>
 
+class QTimeLine;
 class AMTouchSrollArea : public QScrollArea
 {
     Q_OBJECT
@@ -14,6 +15,9 @@ signals:
     void pressed();
 
 public slots:
+    void setMapPainter(QWidget *widget);
+    void animeMoveTo(int x, int y);
+    void onActionMovePoint(QRect point);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -23,6 +27,7 @@ protected:
 private:
     bool m_pressed=false, m_moved=false;
     QPoint m_pressedPoint;
+    QTimeLine *m_movingHAnime, *m_movingVAnime;
     int m_hValue, m_vValue;
 };
 
