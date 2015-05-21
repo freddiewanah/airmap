@@ -44,17 +44,14 @@ void AMSearcher::searchPath(const QJsonObject &target)
         return;
     }
     m_end = m_dot[endX][endY];
-    m_dot[endX][endY].status = 2;
-    m_dot[startX][startY].g = 0;
+    m_dot[endX][endY].status = Destiation;
+    m_dot[startX][startY].toFrom = 0;
     m_start = m_dot[startX][startY];
 
-    m_start.h = abs(m_start.x - m_end.x) + abs(m_start.y - m_end.y);
-    m_start.f = m_start.g + m_start.h;
+    m_start.toDest = abs(m_start.x - m_end.x) + abs(m_start.y - m_end.y);
+    m_start.total = m_start.toFrom + m_start.toDest;
 
-    while(!m_q.empty())
-    {
-        m_q.pop();
-    }
+    m_q=priority_queue<Dot>();
     m_q.push(m_start);
 
     while (!m_q.empty())
@@ -62,7 +59,7 @@ void AMSearcher::searchPath(const QJsonObject &target)
         m_now = m_q.top();
         m_q.pop();
 
-        if (m_now.status == 1)
+        if (m_now.status==Walked)
         {
             continue;
         }
@@ -78,7 +75,7 @@ void AMSearcher::searchPath(const QJsonObject &target)
                 break;
             }
         }
-        m_dot[m_now.x][m_now.y].status = 1;
+        m_dot[m_now.x][m_now.y].status=Walked;
     }
 }
 
@@ -100,10 +97,10 @@ void AMSearcher::loadMap(const Map &map,
         {
             m_dot[i][j].x = i;
             m_dot[i][j].y = j;
-            m_dot[i][j].f = 10000;
-            m_dot[i][j].g = 10000;
-            m_dot[i][j].h = 0;
-            m_dot[i][j].status = 0;
+            m_dot[i][j].total = 10000000;
+            m_dot[i][j].toFrom = 10000000;
+            m_dot[i][j].toDest = 0;
+            m_dot[i][j].status = Normal;
             m_dot[i][j].Fx = -1;
             m_dot[i][j].Fy = -1;
         }
@@ -148,7 +145,8 @@ void AMSearcher::loadMap(const Map &map,
             {
                 for(int v=vS; v<vE; v++)
                 {
-                    m_dot[h][v].status=1;
+                    //Treat invaild point as walked point.
+                    m_dot[h][v].status=Walked;
                 }
             }
         }
@@ -192,26 +190,30 @@ bool AMSearcher::aStarSearch(Dot now, int value, int startarr, int endarr)
     {
         if (aStarCanbe(x + m_arr[2 * i], y + m_arr[2 * i + 1]))
         {
-            Dot *current = &m_dot[x + m_arr[2 * i]][y + m_arr[2 * i + 1]];
-            if ((*current).status == 2)
+            Dot &current = m_dot[x + m_arr[2 * i]][y + m_arr[2 * i + 1]];
+            if (current.status == Walked)
             {
-                (*current).g = now.g + value;
-                (*current).Fx = now.x;
-                (*current).Fy = now.y;
-                aStarRecall((*current));
+                continue;
+            }
+            if (current.status == Destiation)
+            {
+                current.toFrom = now.toFrom + value;
+                current.Fx = now.x;
+                current.Fy = now.y;
+                aStarRecall(current);
                 emit searchSuccess();
                 flag = true;
                 break;
             }
-            if ((*current).g > now.g + value)
+            if (current.toFrom > now.toFrom + value)
             {
-                (*current).g = now.g + value;
-                (*current).h = abs((*current).x - m_end.x)
-                        + abs((*current).y - m_end.y);
-                (*current).f = (*current).g + (*current).h;
-                (*current).Fx = now.x;
-                (*current).Fy = now.y;
-                m_q.push((*current));
+                current.toFrom = now.toFrom + value;
+                current.toDest = abs(current.x - m_end.x)
+                        + abs(current.y - m_end.y);
+                current.total = current.toFrom + current.toDest;
+                current.Fx = now.x;
+                current.Fy = now.y;
+                m_q.push(current);
             }
         }
     }

@@ -1,5 +1,8 @@
 #include <QMouseEvent>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QScrollBar>
+#include <QTimeLine>
 
 #include "amtouchsrollarea.h"
 
@@ -56,6 +59,40 @@ AMTouchSrollArea::AMTouchSrollArea(QWidget *parent) :
                                          "   subcontrol-position: up;"
                                          "   subcontrol-origin: margin;"
                                          "}");
+
+    m_movingHAnime=new QTimeLine(300, this);
+    m_movingHAnime->setUpdateInterval(20);
+    connect(m_movingHAnime, &QTimeLine::frameChanged,
+            [=](const int &frame)
+            {horizontalScrollBar()->setValue(frame);});
+    m_movingVAnime=new QTimeLine(300, this);
+    m_movingVAnime->setUpdateInterval(20);
+    connect(m_movingVAnime, &QTimeLine::frameChanged,
+            [=](const int &frame)
+            {verticalScrollBar()->setValue(frame);});
+
+}
+
+void AMTouchSrollArea::setMapPainter(QWidget *widget)
+{
+    //Set the widget.
+    setWidget(widget);
+}
+
+void AMTouchSrollArea::onActionMovePoint(QRect point)
+{
+    animeMoveTo(point.x()-((width()-point.width())>>1),
+                point.y()-((height()-point.height())>>1));
+}
+
+void AMTouchSrollArea::animeMoveTo(int x, int y)
+{
+    m_movingHAnime->stop();
+    m_movingVAnime->stop();
+    m_movingHAnime->setFrameRange(horizontalScrollBar()->value(), x);
+    m_movingVAnime->setFrameRange(verticalScrollBar()->value(), y);
+    m_movingHAnime->start();
+    m_movingVAnime->start();
 }
 
 void AMTouchSrollArea::mousePressEvent(QMouseEvent *event)
