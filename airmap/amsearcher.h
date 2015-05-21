@@ -32,22 +32,28 @@ public slots:
     void setLocationManager(AMLocationManagerBase *locationManager);
 
 private:
+    enum DotType
+    {
+        Normal = 0,
+        Walked = 1,
+        Destiation = 2
+    };
     struct Dot
     {
         int x;
         int y;
         int z;
-        int f;
-        int g;
-        int h;
+        int total;
+        int toFrom;
+        int toDest;
         int status;
         int Fx;
         int Fy;
-        friend bool operator < (Dot a, Dot b)
+        friend bool operator < (const Dot &a, const Dot &b)
         {
-            if (a.h == b.h)
-                return a.f > b.f;
-            return a.h > b.h;
+            if (a.toDest == b.toDest)
+                return a.total > b.total;
+            return a.toDest > b.toDest;
         }
     };
     Dot m_dot[2009][2009];

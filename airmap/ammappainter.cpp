@@ -199,6 +199,9 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
 
     if(m_floorIndex!=-1)
     {
+        //----Debug---
+        painter.setPen(QColor(255,0,0));
+
         QList<MapItem> itemList=m_mapList.at(m_floorIndex).items;
         for(QList<MapItem>::iterator i=itemList.begin();
             i!=itemList.end();
@@ -207,6 +210,10 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
             QSize scaledSize=(*i).zoomGeometry.size().toSize();
             int iconSize=((qreal)qMin(scaledSize.width(), scaledSize.height()))*0.8;
             QRect currentRect=(*i).zoomGeometry.toRect();
+
+            //----Debug----
+            painter.drawRect(currentRect);
+
             painter.drawPixmap(QRect(currentRect.x()+((currentRect.width()-iconSize)>>1),
                                      currentRect.y()+((currentRect.height()-iconSize)>>1),
                                      iconSize,
