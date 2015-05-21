@@ -32,6 +32,8 @@ void AMSearcher::searchPath(const QJsonObject &target)
         startY=((qreal)mapSize.height())*target.value("FromY").toDouble(),
         endX=-1, endY=-1;
     loadMap(currentMap,
+            startX,
+            startY,
             endX,
             endY,
             target.value("DestinationType").toInt(),

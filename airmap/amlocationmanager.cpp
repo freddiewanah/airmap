@@ -31,7 +31,7 @@ bool AMLocationManager::getCurrentPos(double &a, double &b, double &c)
     //----Debug-----
     a=0.3;
     b=0.3;
-    c=1;
+    c=2;
     return true;
     //Get information.
     QByteArray rawData=getPositionInfo();
