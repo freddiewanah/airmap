@@ -57,7 +57,13 @@ private:
         }
     };
     Dot m_dot[2009][2009];
-    void loadMap(const Map &map, int &endX, int &endY, const int &type, const int &index);
+    void loadMap(const Map &map,
+                 const int &startX,
+                 const int &startY,
+                 int &endX,
+                 int &endY,
+                 const int &type,
+                 const int &index);
     bool aStarCanbe(int x, int y);
     void aStarRecall(Dot m_now);
     bool aStarSearch(Dot m_now, int value, int startarr, int endarr);

@@ -161,6 +161,11 @@ void AMMapPainter::onActionPressed(QPoint position)
         {
             if((*i).zoomGeometry.contains(position))
             {
+                //If item invalid, break;
+                if((*i).type==-1)
+                {
+                    break;
+                }
                 showItemDetail(*i);
                 break;
             }
@@ -207,12 +212,23 @@ void AMMapPainter::paintEvent(QPaintEvent *event)
             i!=itemList.end();
             ++i)
         {
+//            if((*i).type==-1)
+//            {
+//                continue;
+//            }
             QSize scaledSize=(*i).zoomGeometry.size().toSize();
             int iconSize=((qreal)qMin(scaledSize.width(), scaledSize.height()))*0.8;
             QRect currentRect=(*i).zoomGeometry.toRect();
 
             //----Debug----
             painter.drawRect(currentRect);
+
+            //----Debug-----
+            //After debug, enable the upper.
+            if((*i).type==-1)
+            {
+                continue;
+            }
 
             painter.drawPixmap(QRect(currentRect.x()+((currentRect.width()-iconSize)>>1),
                                      currentRect.y()+((currentRect.height()-iconSize)>>1),
@@ -304,7 +320,8 @@ void AMMapPainter::loadMapInfo(Map &map, const QString &filePath)
                                     mapItemArray.at(3).toDouble());
             mapItem.zoomGeometry=QRectF(mapItem.geometry.topLeft()*m_zoom,
                                         mapItem.geometry.size()*m_zoom);
-            mapItem.type=m_typeTextToIndex.value(mapItemArray.at(4).toString());
+            mapItem.type=m_typeTextToIndex.value(mapItemArray.at(4).toString(),
+                                                 -1);
             mapItem.id=mapItemArray.at(5).toInt();
             //Insert the item to map.
             map.items.append(mapItem);

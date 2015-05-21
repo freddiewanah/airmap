@@ -85,6 +85,8 @@ void AMSearcher::setLocationManager(AMLocationManagerBase *locationManager)
 }
 
 void AMSearcher::loadMap(const Map &map,
+                         const int &startX,
+                         const int &startY,
                          int &endX,
                          int &endY,
                          const int &type,
@@ -105,6 +107,8 @@ void AMSearcher::loadMap(const Map &map,
             m_dot[i][j].Fy = -1;
         }
     }
+    //Genereate the start pos.
+    QPoint startPos=QPoint(startX, startY);
     //Set map data.
     QList<MapItem> items=map.items;
     for(QList<MapItem>::iterator i=items.begin();
@@ -117,6 +121,10 @@ void AMSearcher::loadMap(const Map &map,
             QPoint destinationPoint=(*i).geometry.center().toPoint();
             endX=destinationPoint.x();
             endY=destinationPoint.y();
+        }
+        else if((*i).geometry.contains(startPos))
+        {
+            continue;
         }
         else
         {
