@@ -51,9 +51,9 @@ private:
         int Fy;
         friend bool operator < (const Dot &a, const Dot &b)
         {
-            if (a.toDest == b.toDest)
-                return a.total > b.total;
-            return a.toDest > b.toDest;
+            if (a.total == b.total)
+                return a.toDest > b.toDest;
+            return a.total > b.total;
         }
     };
     Dot m_dot[2009][2009];
